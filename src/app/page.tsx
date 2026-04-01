@@ -69,6 +69,7 @@ export default function Home() {
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null)
   const [expandedThinkingIds, setExpandedThinkingIds] = useState<Set<string>>(new Set())
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesAreaRef = useRef<HTMLDivElement>(null)
 
   const toggleThinking = (msgId: string) => {
     setExpandedThinkingIds(prev => {
@@ -225,7 +226,24 @@ export default function Home() {
       </aside>
 
       {/* ── Main ───────────────────────────────────────────────────────── */}
-      <main className="main">
+      <main className="main relative">
+        {/* Floating Scroll Controls */}
+        <div className="absolute right-6 bottom-32 flex flex-col gap-3 z-[40]">
+          <button 
+            onClick={() => messagesAreaRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-theme-dim/80 border border-theme-primary/30 text-theme-primary hover:bg-theme-primary/20 hover:scale-110 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)] backdrop-blur-md"
+            title="Scroll to Top"
+          >
+            <ChevronUp size={18} />
+          </button>
+          <button 
+            onClick={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-theme-dim/80 border border-theme-primary/30 text-theme-primary hover:bg-theme-primary/20 hover:scale-110 transition-all shadow-[0_0_15px_rgba(0,0,0,0.5)] backdrop-blur-md"
+            title="Scroll to Bottom"
+          >
+            <ChevronDown size={18} />
+          </button>
+        </div>
 
         {/* Chat Header */}
         <header className="chat-header">
@@ -332,7 +350,7 @@ export default function Home() {
         </header>
 
         {/* Messages / Welcome */}
-        <div className="messages" id="messagesArea">
+        <div className="messages custom-scrollbar" id="messagesArea" ref={messagesAreaRef}>
           {!currentConversationId || !currentConversation?.messages?.length ? (
             /* ... existing welcome screen ... */
             <div className="welcome flex flex-col items-center justify-center min-h-[60%]">
@@ -481,7 +499,6 @@ export default function Home() {
           )}
         </div>
 
-        {/* ── Input area (matches index.html .input-area) ── */}
         <div className="input-area">
           <div className="input-container">
 
@@ -525,13 +542,8 @@ export default function Home() {
               </div>
             )}
 
-            {/* ChatInput already has the textarea + send button */}
+            {/* ChatInput already has the textarea + send button + hint */}
             <ChatInput />
-
-            {/* Keyboard hint */}
-            <div className="input-hint">
-              Enter to send · Shift+Enter for new line
-            </div>
           </div>
         </div>
       </main>

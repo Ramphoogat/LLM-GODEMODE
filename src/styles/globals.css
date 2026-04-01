@@ -8,7 +8,10 @@
 /* Ported from index.html — JetBrains Mono + Matrix dark theme */
 
 
-/* ── CSS Variables (Matrix / Default Theme) ── */
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 255, 65, 0.1); border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0, 255, 65, 0.2); }
 :root {
   --bg: #0d0208;
   --bg-secondary: #0a0a0a;
@@ -774,10 +777,11 @@ body {
 
 /* ── Input Area ── */
 .input-area {
-  padding: 20px;
-  border-top: 1px solid var(--border);
-  background: var(--bg-secondary);
+  padding: 10px 20px 20px;
+  background: transparent;
   flex-shrink: 0;
+  position: relative;
+  z-index: 50;
 }
 
 .input-container {

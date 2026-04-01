@@ -309,9 +309,9 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
             onComplete: (content, modelId, score) => {
               const finalMessage = content || '⚠️ **ULTRA RACE FAILURE**: No models generated a valid response. Please check your API key or connection.'
               const currentThinking = useStore.getState().thinking;
-              
+
               finishThinking(content ? `Winner: ${modelId.split('/').pop()} (${score})` : 'GAUNTLET FAILED')
-              
+
               const thinkingData = {
                 logs: [...currentThinking.logs],
                 models: [...currentThinking.models],
@@ -327,7 +327,7 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
                   thinking: thinkingData
                 })
               } else {
-                updateMessageContent(convId!!, assistantMsgId, finalMessage, { 
+                updateMessageContent(convId!!, assistantMsgId, finalMessage, {
                   model: content ? modelId : 'error',
                   thinking: thinkingData
                 })
@@ -393,8 +393,8 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
   const activeMemoryCount = memoriesEnabled ? memories.filter((m: any) => m.active).length : 0
 
   return (
-    <div className="border-y-2 border-t-2 border-b-2 border-x-2 border-theme-primary bg-theme-dim/50 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="w-full bg-none">
+      <div className="max-w-3xl mx-auto px-4 pb-4">
         {autoTuneEnabled && displayResult && showTuneDetails && (
           <div className="mb-3 p-3 bg-theme-bg border border-theme-primary rounded-lg space-y-3">
             <div className="flex items-center justify-between">
@@ -425,166 +425,140 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
           </div>
         )}
 
-        {/* ── Model Selector ── */}
-        <div className="relative mb-3">
-          <button
-            onClick={() => setShowModelSelector(!showModelSelector)}
-            className="flex items-center gap-2 group px-3 py-1.5 rounded-lg bg-theme-dim/40 border border-theme-primary/20 hover:border-theme-primary/50 transition-all text-[11px] font-bold tracking-tight theme-secondary"
-          >
-            <Brain className="w-3.5 h-3.5 text-theme-primary group-hover:scale-110 transition-transform" />
-            <span className="opacity-60">MODEL:</span>
-            <span className="text-theme-primary">
-              {ALL_MODELS.find((m: any) => m.id === (currentConversation?.model || defaultModel))?.name || (currentConversation?.model || defaultModel)}
-            </span>
-            <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${showModelSelector ? 'rotate-180' : ''}`} />
-          </button>
+        {/* ── Pill Input ── */}
+        <div className="relative group">
+          <div className="absolute -top-10 left-0">
+            <button
+              onClick={() => setShowModelSelector(!showModelSelector)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-theme-dim/60 border border-theme-primary/20 hover:border-theme-primary/50 transition-all text-[10px] font-bold tracking-tight theme-secondary backdrop-blur-md"
+            >
+              <Brain className="w-3 h-3 text-theme-primary" />
+              <span className="opacity-60">MODEL:</span>
+              <span className="text-theme-primary max-w-[150px] truncate">
+                {ALL_MODELS.find((m: any) => m.id === (currentConversation?.model || defaultModel))?.name || (currentConversation?.model || defaultModel)}
+              </span>
+              <ChevronDown className={`w-2.5 h-2.5 transition-transform duration-200 ${showModelSelector ? 'rotate-180' : ''}`} />
+            </button>
 
-          {showModelSelector && (
-            <div className="absolute bottom-full left-0 mb-2 w-[320px] bg-theme-dim border border-theme-primary/30 rounded-xl shadow-2xl backdrop-blur-xl z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
-              <div className="p-2 border-b border-theme-primary/10 flex justify-between items-center">
-                <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 px-2 py-1">Select Model ({ALL_MODELS.length})</p>
-                <div className="flex gap-2 mr-2">
-                  <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-theme-primary" /><span className="text-[7px]">OR</span></div>
-                  <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#ffcc00]" /><span className="text-[7px]">AR</span></div>
+            {showModelSelector && (
+              <div className="absolute bottom-full left-0 mb-2 w-[320px] bg-theme-dim border border-theme-primary/30 rounded-xl shadow-2xl backdrop-blur-xl z-[60] overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
+                <div className="p-2 border-b border-theme-primary/10 flex justify-between items-center">
+                  <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 px-2 py-1">Select Model ({ALL_MODELS.length})</p>
+                </div>
+                <div className="max-h-[300px] overflow-y-auto p-1 custom-scrollbar">
+                  {ALL_MODELS.map((m: any) => (
+                    <button
+                      key={m.id}
+                      onClick={() => {
+                        if (currentConversationId) {
+                          updateConversationModel(currentConversationId, m.id)
+                        }
+                        setDefaultModel(m.id)
+                        setShowModelSelector(false)
+                      }}
+                      className={`w-full flex items-start gap-3 p-2.5 rounded-lg transition-all text-left group
+                        ${(currentConversation?.model || defaultModel) === m.id
+                          ? 'bg-theme-primary/10 border border-theme-primary/20'
+                          : 'hover:bg-theme-primary/5 border border-transparent'
+                        }`}
+                    >
+                      <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${m.provider === 'AgentRouter' ? 'bg-[#ffcc00] shadow-[0_0_8px_#ffcc00]' : 'bg-theme-primary shadow-[0_0_8px_var(--primary-glow)]'}`} />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <span className={`text-[11px] font-bold truncate ${m.provider === 'AgentRouter' ? 'text-[#ffcc00]' : 'theme-primary'}`}>{m.name}</span>
+                          <span className="text-[8px] font-black opacity-30 shrink-0">{m.provider}</span>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="max-h-[400px] overflow-y-auto p-1 custom-scrollbar">
-                {ALL_MODELS.map((m: any) => (
-                  <button
-                    key={m.id}
-                    onClick={() => {
-                      if (currentConversationId) {
-                        updateConversationModel(currentConversationId, m.id)
-                      }
-                      setDefaultModel(m.id)
-                      setShowModelSelector(false)
-                    }}
-                    className={`w-full flex items-start gap-3 p-2.5 rounded-lg transition-all text-left group
-                      ${(currentConversation?.model || defaultModel) === m.id
-                        ? 'bg-theme-primary/10 border border-theme-primary/20'
-                        : 'hover:bg-theme-primary/5 border border-transparent'
-                      }`}
-                  >
-                    <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${m.provider === 'AgentRouter' ? 'bg-[#ffcc00] shadow-[0_0_8px_#ffcc00]' : 'bg-theme-primary shadow-[0_0_8px_var(--primary-glow)]'}`} />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 truncate">
-                          <span className={`text-[11px] font-bold truncate ${m.provider === 'AgentRouter' ? 'text-[#ffcc00]' : 'theme-primary'}`}>{m.name}</span>
-                          {m.isFree && (
-                            <span className="px-1 py-0.5 rounded-[4px] bg-green-500/20 text-green-400 text-[7px] font-black uppercase tracking-tighter border border-green-500/30">FREE</span>
-                          )}
-                        </div>
-                        <span className="text-[8px] font-black opacity-30 shrink-0">{m.provider}</span>
-                      </div>
-                      <p className="text-[9px] theme-secondary opacity-40 truncate mt-0.5">{m.id}</p>
+            )}
+          </div>
+
+          {/* ── Main Pill Container ── */}
+          <div className="relative flex flex-col w-full bg-theme-dim/40 border border-theme-primary/20 rounded-[32px] focus-within:border-theme-primary/60 focus-within:ring-1 focus-within:ring-theme-primary/20 transition-all duration-300 shadow-xl backdrop-blur-md px-2 py-2">
+
+            {/* Attachments Preview inside pill if any */}
+            {attachments.length > 0 && (
+              <div className="flex flex-wrap gap-2 p-2 mb-1 animate-in fade-in slide-in-from-bottom-2">
+                {attachments.map((file) => (
+                  <div key={file.id} className="relative group">
+                    <div className="w-12 h-12 rounded-xl overflow-hidden border border-theme-primary/20 bg-theme-bg/40">
+                      {file.type === 'image' ? (
+                        <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="flex items-center justify-center w-full h-full"><FileText className="w-4 h-4 opacity-40" /></div>
+                      )}
                     </div>
-                  </button>
+                    <button onClick={() => removeAttachment(file.id)} className="absolute -top-1 -right-1 bg-theme-bg rounded-full p-0.5 text-red-500 shadow-md transform hover:scale-110 transition-transform"><XCircle size={12} /></button>
+                  </div>
                 ))}
               </div>
-            </div>
-          )}
-        </div>
+            )}
 
-        {/* ── Attachments Preview ── */}
-        {attachments.length > 0 && (
-          <div className="flex flex-wrap gap-3 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            {attachments.map((file) => (
-              <div key={file.id} className="relative group">
-                <div className="w-20 h-20 rounded-xl overflow-hidden border border-theme-primary/30 bg-theme-dim flex items-center justify-center group-hover:border-theme-primary/60 transition-all shadow-lg">
-                  {file.type === 'image' ? (
-                    <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="flex flex-col items-center gap-1 p-2">
-                      <FileText className="w-8 h-8 text-theme-primary/60" />
-                      <span className="text-[8px] font-bold truncate w-14 text-center opacity-60">{file.name}</span>
-                    </div>
-                  )}
-                </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className="ml-2 p-2 text-theme-secondary hover:text-theme-primary transition-all rounded-full hover:bg-theme-primary/10"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Paperclip className="w-5 h-5" />
+                <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple className="hidden" accept="image/*,.pdf,.doc,.docx,.txt" />
+              </button>
+
+              <textarea
+                ref={textareaRef}
+                value={globalInput}
+                onChange={(e) => setGlobalInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={apiKey ? "Ask anything..." : "Set API key in Settings"}
+                disabled={!apiKey || isStreaming}
+                rows={1}
+                className="flex-1 bg-transparent border-none focus:ring-0 resize-none py-3 text-sm placeholder:theme-secondary font-sans leading-relaxed"
+                style={{ minHeight: '44px', maxHeight: '200px' }}
+              />
+
+              {isStreaming ? (
                 <button
-                  onClick={() => removeAttachment(file.id)}
-                  className="absolute -top-2 -right-2 bg-theme-bg border border-theme-primary/40 rounded-full p-0.5 text-red-500 hover:scale-110 transition-transform shadow-xl"
+                  onClick={handleStop}
+                  className="mr-2 p-2 rounded-full bg-red-500/10 text-red-500 border border-red-500/30 hover:bg-red-500/20 transition-all shadow-[0_0_10px_rgba(239,68,68,0.2)]"
                 >
-                  <XCircle className="w-4 h-4 fill-theme-bg" />
+                  <StopCircle className="w-6 h-6" />
                 </button>
-              </div>
-            ))}
+              ) : (
+                <button
+                  onClick={handleSubmit}
+                  disabled={!globalInput.trim() || !apiKey}
+                  className="mr-2 p-2 rounded-full bg-theme-primary text-gray hover:opacity-90 disabled:opacity-30 disabled:grayscale transition-all flex items-center justify-center"
+                >
+                  <Send className="w-5 h-5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)]" />
+                </button>
+              )}
+            </div>
           </div>
-        )}
-
-        <div className="flex items-end gap-1.5 w-full">
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            multiple
-            className="hidden"
-            accept="image/*,.pdf,.doc,.docx,.txt"
-          />
-          <button
-            type="button"
-            className="p-3 text-theme-secondary hover:text-theme-primary hover:bg-theme-primary/10 transition-all rounded-xl border border-theme-primary/20 bg-theme-dim/50 group"
-            onClick={() => fileInputRef.current?.click()}
-            title="Attach files (Images, Documents)"
-          >
-            <Paperclip className="w-5 h-5 group-hover:scale-110 transition-transform" />
-          </button>
-
-          <div className="flex-1 relative">
-            <textarea
-              ref={textareaRef}
-              value={globalInput}
-              onChange={(e) => setGlobalInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={apiKey ? "Message..." : "Set API key in Settings"}
-              disabled={!apiKey || isStreaming}
-              rows={1}
-              className="w-full px-4 py-3 bg-theme-bg/60 border border-theme-primary/30 rounded-xl resize-none focus:outline-none focus:border-theme-primary/80 focus:bg-theme-bg/80 placeholder:theme-secondary disabled:opacity-50 transition-all duration-200 font-mono text-sm leading-relaxed"
-              style={{ minHeight: '48px', maxHeight: '200px' }}
-            />
-          </div>
-
-          {isStreaming ? (
-            <button
-              onClick={handleStop}
-              className="w-[54px] h-[54px] flex items-center justify-center bg-red-500/20 border border-red-500 rounded-xl hover:bg-red-500/30 transition-all flex-shrink-0"
-            >
-              <StopCircle className="w-6 h-6 text-red-500" />
-            </button>
-          ) : (
-            <button
-              onClick={handleSubmit}
-              disabled={!globalInput.trim() || !apiKey}
-              className="w-[54px] h-[54px] flex items-center justify-center bg-theme-primary text-black rounded-xl hover:opacity-90 hover:scale-105 transition-all disabled:opacity-50 disabled:grayscale"
-            >
-              <span className="text-3xl font-black leading-none group-hover:translate-x-1 transition-transform">→</span>
-            </button>
-          )}
         </div>
 
-        <div className="flex items-center justify-between mt-2 text-[10px] uppercase font-bold tracking-widest text-theme-secondary opacity-60">
+        <div className="flex items-center justify-between mt-3 px-4 text-[10px] font-bold tracking-widest text-theme-secondary opacity-50 font-sans">
           <div className="flex items-center gap-4">
             {autoTuneEnabled && (
-              <button
-                onClick={() => setShowTuneDetails(!showTuneDetails)}
-                className={`flex items-center gap-1 hover:text-theme-primary transition-colors ${showTuneDetails ? 'text-theme-primary' : ''}`}
-              >
-                <SlidersHorizontal className="w-2.5 h-2.5" />
-                AutoTune
+              <button onClick={() => setShowTuneDetails(!showTuneDetails)} className={`flex items-center gap-1 hover:text-theme-primary ${showTuneDetails ? 'text-theme-primary' : ''}`}>
+                <SlidersHorizontal className="w-2.5 h-2.5" /> AutoTune
               </button>
             )}
-            {noLogMode && <span>No-Log</span>}
             {activeMemoryCount > 0 && <span>{activeMemoryCount} Memories</span>}
-            {parseltongueConfig.enabled && <span>Parseltongue</span>}
-            {ultraplinianEnabled && <span className="text-orange-400">Ultraplinian</span>}
+            {ultraplinianEnabled && <span className="text-theme-primary">ULTRAPLINIAN Active</span>}
           </div>
-          {isStreaming && (
-            <span className="flex items-center gap-1 animate-pulse">
-              <Loader2 className="w-2.5 h-2.5 animate-spin" />
-              Thinking...
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {isStreaming ? (
+              <span className="flex items-center gap-1 animate-pulse"><Loader2 className="w-2.5 h-2.5 animate-spin" /> Thinking...</span>
+            ) : (
+              <span>Enter to send · Shift+Enter for new line</span>
+            )}
+          </div>
         </div>
       </div>
     </div>
+
   )
 }
