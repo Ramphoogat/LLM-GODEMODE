@@ -1,20 +1,23 @@
-# Contributing to G0DM0D3
+# Contributing to G0DM0DƎ
 
-Thanks for your interest in contributing! This project is licensed under AGPL-3.0.
+Thanks for your interest in contributing to the next generation of G0DM0DƎ! This project has been migrated to a modern, modular **Next.js 14** stack.
 
 ## Getting Started
 
-1. Fork the repo
-2. Clone your fork: `git clone https://github.com/<you>/G0DM0D3.git`
-3. Install dependencies: `npm install`
-4. Copy `.env.example` to `.env` and add your API keys
-5. Start the dev server: `npm run dev`
+1. **Fork the repo**
+2. **Clone your fork**: `git clone https://github.com/<you>/LLM-GODEMODE.git`
+3. **Install dependencies**: `npm install`
+4. **Environment Setup**: Copy `.env.example` to `.env`. The app now automatically loads `NEXT_PUBLIC_OPENROUTER_API_KEY` and `NEXT_PUBLIC_AGENTROUTER_API_KEY` if present.
+5. **Start Dev Server**: `npm run dev` (Access at `http://localhost:3000`)
 
-## Development
+## Development Stack
 
-- **Frontend:** Next.js + React + TypeScript in `src/`
-- **API proxy:** Express server in `api/server.ts`
-- **HF Space build:** Standalone Express app in `HF/`
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **State Management**: Zustand with Persistence
+- **Styling**: Tailwind CSS + Framer Motion
+- **Core Logic**: `src/lib/` (Orchestrators, Classification, Parseltongue)
+- **UI Components**: `src/components/` (ThinkingUI, ChatInput, etc.)
 
 ## Pull Requests
 

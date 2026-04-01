@@ -11,7 +11,7 @@
 
 [GODMOD3.AI](https://godmod3.ai)
 
-G0DM0D3 v3.5 is a professional, modular AI orchestration platform. It pushes the boundaries of post-training interaction through real-time model racing, comparative evaluation, and semantic transformation. Built for red-teamers, researchers, and power users who demand transparency and control over LLM cognition.
+G0DM0DƎ v3.5 is a professional, modular AI orchestration platform. It pushes the boundaries of post-training interaction through real-time model racing, comparative evaluation, and semantic transformation. Built for red-teamers, researchers, and power users who demand transparency and control over LLM cognition.
 
 ![License](https://img.shields.io/badge/license-AGPL--3.0-green)
 ![Tech Stack](https://img.shields.io/badge/stack-Next.js%2014%20|%20TS%20|%20Tailwind-blue)
@@ -30,10 +30,10 @@ The application is built on a high-performance, modular stack designed for scala
 
 ## 📁 Application Structure
 
-G0DM0D3 follows a clean, modular directory structure for maximum local development efficiency:
+G0DM0DƎ follows a clean, modular directory structure for maximum local development efficiency:
 
 ```
-G0DM0D3/
+G0DM0DƎ/
 ├── src/
 │   ├── app/            # Next.js App Router (Layouts & Pages)
 │   ├── components/     # React Components (ThinkingUI, ChatInput, Modals)

@@ -9,7 +9,15 @@ export interface Message {
   autoTuneContextScores?: any[];
   autoTunePatternMatches?: any[];
   autoTuneDeltas?: any[];
-  raceResponses?: any[];
+  attachments?: Attachment[];
+}
+
+export interface Attachment {
+  id: string;
+  type: 'image' | 'file';
+  mimeType: string;
+  name: string;
+  url: string; // base64 or object URL
 }
 
 export interface Conversation {

@@ -8,23 +8,25 @@ import { classifyPrompt, ClassificationResult } from '@/lib/classify'
 import { classifyWithLLM } from '@/lib/classify-llm'
 import { computeAutoTuneParams, getContextLabel, getStrategyLabel, PARAM_META, AutoTuneResult } from '@/lib/autotune'
 import { applyParseltongue, detectTriggers } from '@/lib/parseltongue'
-import { Send, Loader2, StopCircle, SlidersHorizontal, AlertTriangle, Brain, Zap, ChevronDown } from 'lucide-react'
-import { Message, Persona, STMModule } from '../types'
+import { Send, Loader2, StopCircle, SlidersHorizontal, AlertTriangle, Brain, Zap, ChevronDown, Paperclip, Image as ImageIcon, FileText, XCircle } from 'lucide-react'
+import { Message, Persona, STMModule, Attachment } from '../types'
 
-import { ULTRAPLINIAN_MODELS, getModelDisplayName } from '@/lib/models'
+import { ULTRAPLINIAN_MODELS, FREE_MODELS, getModelDisplayName } from '@/lib/models'
 
 const AGENTROUTER_MODELS = [
   { id: 'deepseek-r1-0528', name: 'DeepSeek R1', provider: 'AgentRouter' },
   { id: 'glm-4.5', name: 'GLM 4.5', provider: 'AgentRouter' },
 ]
 
+// Deduplicated merged list
 const ALL_MODELS = [
-  ...ULTRAPLINIAN_MODELS.map(id => ({
+  ...Array.from(new Set([...ULTRAPLINIAN_MODELS, ...FREE_MODELS])).map(id => ({
     id,
     name: getModelDisplayName(id),
-    provider: 'OpenRouter'
+    provider: 'OpenRouter',
+    isFree: id.endsWith(':free') || FREE_MODELS.includes(id)
   })),
-  ...AGENTROUTER_MODELS
+  ...AGENTROUTER_MODELS.map(m => ({ ...m, isFree: false }))
 ]
 
 interface ChatInputProps {
@@ -94,8 +96,37 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
     transformed: boolean
   } | null>(null)
 
+  const [attachments, setAttachments] = useState<Attachment[]>([])
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
+
+    for (const file of files) {
+      const reader = new FileReader()
+      reader.onload = (loadEvent) => {
+        const base64 = loadEvent.target?.result as string
+        const newAttachment: Attachment = {
+          id: Math.random().toString(36).substring(7),
+          type: file.type.startsWith('image/') ? 'image' : 'file',
+          mimeType: file.type,
+          name: file.name,
+          url: base64
+        }
+        setAttachments(prev => [...prev, newAttachment])
+      }
+      reader.readAsDataURL(file)
+    }
+    // Reset input
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  const removeAttachment = (id: string) => {
+    setAttachments(prev => prev.filter(a => a.id !== id))
+  }
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -171,7 +202,14 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
     const parseltongueResult = applyParseltongue(originalMessage, parseltongueConfig)
     const userMessage = parseltongueResult.transformedText
 
-    addMessage(convId, { role: 'user', content: originalMessage })
+    addMessage(convId, { 
+      role: 'user', 
+      content: originalMessage,
+      attachments: attachments.length > 0 ? [...attachments] : undefined
+    })
+
+    const msgAttachments = [...attachments]
+    setAttachments([])
 
     const persona = currentPersona || personas[0] || DEFAULT_PERSONA
     const model = currentConversation?.model || defaultModel
@@ -411,7 +449,12 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
                     <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${m.provider === 'AgentRouter' ? 'bg-[#ffcc00] shadow-[0_0_8px_#ffcc00]' : 'bg-theme-primary shadow-[0_0_8px_var(--primary-glow)]'}`} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className={`text-[11px] font-bold truncate ${m.provider === 'AgentRouter' ? 'text-[#ffcc00]' : 'theme-primary'}`}>{m.name}</span>
+                        <div className="flex items-center gap-2 truncate">
+                          <span className={`text-[11px] font-bold truncate ${m.provider === 'AgentRouter' ? 'text-[#ffcc00]' : 'theme-primary'}`}>{m.name}</span>
+                          {m.isFree && (
+                            <span className="px-1 py-0.5 rounded-[4px] bg-green-500/20 text-green-400 text-[7px] font-black uppercase tracking-tighter border border-green-500/30">FREE</span>
+                          )}
+                        </div>
                         <span className="text-[8px] font-black opacity-30 shrink-0">{m.provider}</span>
                       </div>
                       <p className="text-[9px] theme-secondary opacity-40 truncate mt-0.5">{m.id}</p>
@@ -423,18 +466,48 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
           )}
         </div>
 
+        {/* ── Attachments Preview ── */}
+        {attachments.length > 0 && (
+          <div className="flex flex-wrap gap-3 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            {attachments.map((file) => (
+              <div key={file.id} className="relative group">
+                <div className="w-20 h-20 rounded-xl overflow-hidden border border-theme-primary/30 bg-theme-dim flex items-center justify-center group-hover:border-theme-primary/60 transition-all shadow-lg">
+                  {file.type === 'image' ? (
+                    <img src={file.url} alt={file.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="flex flex-col items-center gap-1 p-2">
+                      <FileText className="w-8 h-8 text-theme-primary/60" />
+                      <span className="text-[8px] font-bold truncate w-14 text-center opacity-60">{file.name}</span>
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={() => removeAttachment(file.id)}
+                  className="absolute -top-2 -right-2 bg-theme-bg border border-theme-primary/40 rounded-full p-0.5 text-red-500 hover:scale-110 transition-transform shadow-xl"
+                >
+                  <XCircle className="w-4 h-4 fill-theme-bg" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
         <div className="flex items-end gap-1.5 w-full">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            multiple
+            className="hidden"
+            accept="image/*,.pdf,.doc,.docx,.txt"
+          />
           <button
             type="button"
-            className="p-3 text-theme-secondary hover:text-theme-primary transition-all rounded-xl border border-theme-primary/20 bg-theme-dim/50"
-            onClick={() => { }}
-            title="Attach image"
+            className="p-3 text-theme-secondary hover:text-theme-primary hover:bg-theme-primary/10 transition-all rounded-xl border border-theme-primary/20 bg-theme-dim/50 group"
+            onClick={() => fileInputRef.current?.click()}
+            title="Attach files (Images, Documents)"
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="3" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <path d="M21 15l-5-5-11 11" />
-            </svg>
+            <Paperclip className="w-5 h-5 group-hover:scale-110 transition-transform" />
           </button>
 
           <div className="flex-1 relative">

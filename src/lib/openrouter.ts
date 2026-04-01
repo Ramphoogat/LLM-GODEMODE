@@ -21,7 +21,25 @@ export const sendMessage = async (params: { apiKey: string, agentRouterApiKey?: 
       },
       body: JSON.stringify({
         model: modelToUse,
-        messages: messages.map((m: any) => ({ role: m.role, content: m.content })),
+        messages: messages.map((m: any) => {
+          if (!m.attachments || m.attachments.length === 0) {
+            return { role: m.role, content: m.content }
+          }
+          
+          const content = [{ type: 'text', text: m.content }]
+          m.attachments.forEach((a: any) => {
+            if (a.type === 'image') {
+              content.push({
+                type: 'image_url',
+                image_url: { url: a.url }
+              } as any)
+            } else {
+              // For files, hint at them in the text
+              content[0].text += `\n\n[Attachment: ${a.name}]`
+            }
+          })
+          return { role: m.role, content }
+        }),
         stream: true
       }),
       signal

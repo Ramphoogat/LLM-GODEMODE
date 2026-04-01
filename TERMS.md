@@ -1,4 +1,4 @@
-# G0DM0D3 -- Terms of Service
+# G0DM0DƎ -- Terms of Service
 
 **Last updated:** 2026-02-17
 
@@ -6,13 +6,13 @@
 
 ## 1. Acceptance
 
-By using G0DM0D3 -- whether through the web frontend, the API server, or a self-hosted deployment -- you agree to these terms. If you do not agree, do not use the software.
+By using G0DM0DƎ -- whether through the web frontend, the API server, or a self-hosted deployment -- you agree to these terms. If you do not agree, do not use the software.
 
 ---
 
-## 2. What G0DM0D3 Is
+## 2. What G0DM0DƎ Is
 
-G0DM0D3 is an open-source research tool for AI safety, red teaming, and cognition research. It is provided **as-is** for experimentation and study. It is not a commercial product, and there is no company behind it -- just an open-source project and its contributors.
+G0DM0DƎ is an open-source research tool for AI safety, red teaming, and cognition research. It is provided **as-is** for experimentation and study. It is not a commercial product, and there is no company behind it -- just an open-source project and its contributors.
 
 ---
 
@@ -20,7 +20,7 @@ G0DM0D3 is an open-source research tool for AI safety, red teaming, and cognitio
 
 This is the section that matters most. Read it carefully.
 
-G0DM0D3 collects data in **three tiers**. The first two are always on and collect **only metadata** -- never your messages, prompts, responses, API keys, or any personally identifiable information. The third tier is strictly opt-in and does include conversation content.
+G0DM0DƎ collects data in **three tiers**. The first two are always on and collect **only metadata** -- never your messages, prompts, responses, API keys, or any personally identifiable information. The third tier is strictly opt-in and does include conversation content.
 
 ### Overview
 
@@ -155,7 +155,7 @@ All dataset entries pass through an automatic PII scrubber before being stored. 
 
 | Excluded Data | Why |
 |---|---|
-| API keys | Never stored, never transmitted to G0DM0D3 infrastructure |
+| API keys | Never stored, never transmitted to G0DM0DƎ infrastructure |
 | IP addresses | Not recorded |
 | Auth tokens | Not recorded |
 | System prompts | Excluded to prevent leaking custom prompt configurations |
@@ -170,11 +170,11 @@ All dataset entries pass through an automatic PII scrubber before being stored. 
 
 ### In-Memory Storage
 
-All collected data (metadata, telemetry, and opt-in dataset entries) is stored in server memory first. Nothing is written to disk on the G0DM0D3 server. If the server restarts, in-memory data that has not been published is lost.
+All collected data (metadata, telemetry, and opt-in dataset entries) is stored in server memory first. Nothing is written to disk on the G0DM0DƎ server. If the server restarts, in-memory data that has not been published is lost.
 
 ### HuggingFace Publishing
 
-When configured (via `HF_TOKEN` and `HF_DATASET_REPO` environment variables), G0DM0D3 auto-publishes collected data to a HuggingFace dataset repository.
+When configured (via `HF_TOKEN` and `HF_DATASET_REPO` environment variables), G0DM0DƎ auto-publishes collected data to a HuggingFace dataset repository.
 
 | Detail | Value |
 |---|---|
@@ -205,14 +205,14 @@ Self-hosted deployments can disable HuggingFace publishing entirely by not setti
 Your API keys (e.g., OpenRouter keys) are:
 
 - **Stored in your browser's `localStorage` only.** They never leave your device except to be sent directly to the third-party API provider (e.g., OpenRouter) as part of your requests.
-- **Never transmitted to G0DM0D3 servers or infrastructure.**
+- **Never transmitted to G0DM0DƎ servers or infrastructure.**
 - **Never logged, recorded, or included in any telemetry or metadata.**
 
 You are responsible for keeping your API keys secure. Do not share them publicly.
 
 ### Chat History Self-Custody
 
-Your conversation history is stored **exclusively in your browser's `localStorage`**. G0DM0D3 has no account system, no cloud sync, and no server-side storage for your conversations.
+Your conversation history is stored **exclusively in your browser's `localStorage`**. G0DM0DƎ has no account system, no cloud sync, and no server-side storage for your conversations.
 
 **This means:**
 
@@ -221,7 +221,7 @@ Your conversation history is stored **exclusively in your browser's `localStorag
 - Private/incognito browsing sessions discard all data when the window closes.
 - `localStorage` is subject to browser storage limits (typically 5–10 MB). If you exceed this limit, older data may be silently evicted by the browser.
 
-**G0DM0D3 cannot recover lost conversations.** No copy of your chat history exists on any server. You are solely responsible for backing up any conversations you wish to keep. You can export your data manually via your browser's developer tools (`Application → Local Storage`) or by copying conversations from the UI.
+**G0DM0DƎ cannot recover lost conversations.** No copy of your chat history exists on any server. You are solely responsible for backing up any conversations you wish to keep. You can export your data manually via your browser's developer tools (`Application → Local Storage`) or by copying conversations from the UI.
 
 ---
 
@@ -236,11 +236,11 @@ This section applies to **Enterprise Users** -- defined as any for-profit entity
 - Is publicly traded on any stock exchange
 - Is a subsidiary, division, or affiliate of an entity that meets any of the above criteria
 
-If you're an individual, a researcher, a student, a hobbyist, a small team, a nonprofit, an educational institution, a government research lab, or a company that doesn't meet the thresholds above -- **this section does not apply to you. G0DM0D3 is free for you. Full stop.**
+If you're an individual, a researcher, a student, a hobbyist, a small team, a nonprofit, an educational institution, a government research lab, or a company that doesn't meet the thresholds above -- **this section does not apply to you. G0DM0DƎ is free for you. Full stop.**
 
 ### What Enterprise Users Must Do
 
-Enterprise Users that use the G0DM0D3 hosted service (the API server, the web frontend hosted by the project, or any project-operated infrastructure) in any capacity -- including internal tools, employee-facing products, customer-facing products, evaluation, benchmarking, or integration -- must obtain a **Commercial Use License** from the G0DM0D3 maintainers.
+Enterprise Users that use the G0DM0DƎ hosted service (the API server, the web frontend hosted by the project, or any project-operated infrastructure) in any capacity -- including internal tools, employee-facing products, customer-facing products, evaluation, benchmarking, or integration -- must obtain a **Commercial Use License** from the G0DM0DƎ maintainers.
 
 This applies to:
 
@@ -252,7 +252,7 @@ This applies to:
 
 A Commercial Use License includes:
 
-- Authorized use of the hosted G0DM0D3 service for enterprise purposes
+- Authorized use of the hosted G0DM0DƎ service for enterprise purposes
 - Priority support channel
 - SLA guarantees (negotiated per agreement)
 - Custom data handling and retention terms (if needed)
@@ -262,7 +262,7 @@ A Commercial Use License includes:
 
 To be absolutely clear, the following uses are **always free, for everyone, including enterprises**:
 
-- **Self-hosting G0DM0D3 from source code** under the AGPL-3.0 license. The source code license is separate from these service terms. If you clone the repo, run it on your own servers, and comply with the AGPL-3.0 (keep your derivative works open source), you owe nothing.
+- **Self-hosting G0DM0DƎ from source code** under the AGPL-3.0 license. The source code license is separate from these service terms. If you clone the repo, run it on your own servers, and comply with the AGPL-3.0 (keep your derivative works open source), you owe nothing.
 - **Contributing to the project** via pull requests, issues, documentation, or community support.
 - **Academic or nonprofit research** using the hosted service, regardless of institutional size.
 - **Personal use** by employees of enterprise entities acting in their individual capacity, on their own time, with their own API keys.
@@ -283,7 +283,7 @@ We're not looking to sue anybody. We'd rather have a conversation. But if a bill
 
 ### Data Licensing for Enterprise
 
-Enterprise Users that access the publicly published research dataset (on HuggingFace) for commercial purposes -- including model training, fine-tuning, product development, or competitive intelligence -- must obtain a **Data Use License** from the G0DM0D3 maintainers.
+Enterprise Users that access the publicly published research dataset (on HuggingFace) for commercial purposes -- including model training, fine-tuning, product development, or competitive intelligence -- must obtain a **Data Use License** from the G0DM0DƎ maintainers.
 
 Non-commercial research use of the published dataset is always free.
 
@@ -291,21 +291,21 @@ Non-commercial research use of the published dataset is always free.
 
 ## 7. Your Responsibilities
 
-By using G0DM0D3, you agree that:
+By using G0DM0DƎ, you agree that:
 
-- **You are responsible for the outputs generated through this tool.** G0DM0D3 is a research interface -- it does not generate content itself, it routes requests to AI models via third-party APIs.
+- **You are responsible for the outputs generated through this tool.** G0DM0DƎ is a research interface -- it does not generate content itself, it routes requests to AI models via third-party APIs.
 - **You will comply with all applicable laws and regulations** in your jurisdiction when using this tool.
 - **You will comply with the terms of service of the underlying AI providers** (e.g., OpenRouter, and the model providers accessible through it).
-- **You will not use G0DM0D3 to generate content that is illegal** in your jurisdiction.
+- **You will not use G0DM0DƎ to generate content that is illegal** in your jurisdiction.
 - **If you opt in to dataset contribution (Tier 3), you accept that your conversation data will be published publicly** as part of an open research dataset.
 
 ---
 
 ## 8. No Warranty / Disclaimer
 
-G0DM0D3 IS PROVIDED "AS-IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+G0DM0DƎ IS PROVIDED "AS-IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
 
-The maintainers and contributors of G0DM0D3:
+The maintainers and contributors of G0DM0DƎ:
 
 - Make no guarantees about uptime, availability, or correctness.
 - Are not liable for any damages arising from the use of this software.
@@ -318,7 +318,7 @@ Use this tool at your own risk.
 
 ## 9. Third-Party Services
 
-G0DM0D3 interacts with third-party services. Your use of these services is governed by their respective terms:
+G0DM0DƎ interacts with third-party services. Your use of these services is governed by their respective terms:
 
 | Service | Role | Their Terms |
 |---|---|---|
@@ -326,13 +326,13 @@ G0DM0D3 interacts with third-party services. Your use of these services is gover
 | **HuggingFace** | Hosts published metadata and dataset files | [huggingface.co/terms-of-service](https://huggingface.co/terms-of-service) |
 | **Cloudflare Pages** | Hosts the web frontend and telemetry proxy | [cloudflare.com/terms](https://www.cloudflare.com/terms/) |
 
-G0DM0D3 is not affiliated with, endorsed by, or sponsored by any of these services.
+G0DM0DƎ is not affiliated with, endorsed by, or sponsored by any of these services.
 
 ---
 
 ## 10. Open Source
 
-G0DM0D3 is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+G0DM0DƎ is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
 The entire source code is available for inspection. Every claim made in this document can be verified by reading the code:
 
@@ -347,7 +347,7 @@ You do not need to trust this document. Read the code.
 
 ## 11. Changes to These Terms
 
-These terms may be updated as the project evolves. Changes will be committed to the repository and visible in the git history. There is no email notification system -- if you use G0DM0D3, check this file periodically.
+These terms may be updated as the project evolves. Changes will be committed to the repository and visible in the git history. There is no email notification system -- if you use G0DM0DƎ, check this file periodically.
 
 The "Last updated" date at the top of this document reflects the most recent revision.
 
@@ -364,4 +364,4 @@ This is an open-source project. The best way to reach the maintainers is through
 
 ---
 
-*These terms exist to be honest with you, not to protect a corporation. G0DM0D3 collects metadata to understand how the system performs. It never collects your messages, your keys, or your identity in the always-on tiers. The opt-in tier is exactly that -- opt-in. If you're a person, a researcher, a small team -- this is free. If you're a giant corporation making money off of open-source labor, we're asking you to contribute back. The code is open. Verify it yourself.*
+*These terms exist to be honest with you, not to protect a corporation. G0DM0DƎ collects metadata to understand how the system performs. It never collects your messages, your keys, or your identity in the always-on tiers. The opt-in tier is exactly that -- opt-in. If you're a person, a researcher, a small team -- this is free. If you're a giant corporation making money off of open-source labor, we're asking you to contribute back. The code is open. Verify it yourself.*

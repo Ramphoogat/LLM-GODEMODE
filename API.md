@@ -1,6 +1,6 @@
-# G0DM0D3 Research Preview API
+# G0DM0DƎ Research Preview API
 
-REST API exposing the **ULTRAPLINIAN** multi-model racing engine and core G0DM0D3 systems: **AutoTune** (context-adaptive LLM parameter tuning), **Parseltongue** (text obfuscation), **STM** (semantic text transformation), **Feedback Loop** (EMA-based parameter learning), and **opt-in open dataset collection**.
+REST API exposing the **ULTRAPLINIAN** multi-model racing engine and core G0DM0DƎ systems: **AutoTune** (context-adaptive LLM parameter tuning), **Parseltongue** (text obfuscation), **STM** (semantic text transformation), **Feedback Loop** (EMA-based parameter learning), and **opt-in open dataset collection**.
 
 ## Quick Start
 
@@ -124,7 +124,7 @@ const client = new OpenAI({
 const completion = await client.chat.completions.create({
   model: 'nousresearch/hermes-3-llama-3.1-70b',
   messages: [{ role: 'user', content: 'Hello!' }],
-  // @ts-ignore — G0DM0D3 extension field
+  // @ts-ignore — G0DM0DƎ extension field
   openrouter_api_key: 'sk-or-v1-...',
 });
 console.log(completion.choices[0].message.content);
@@ -154,7 +154,7 @@ curl -X POST https://your-space.hf.space/v1/chat/completions \
   }'
 ```
 
-The G0DM0D3 pipeline (GODMODE, AutoTune, Parseltongue, STM) runs transparently behind the standard interface. Pipeline metadata is returned in the `x_g0dm0d3` extension field (ignored by standard SDKs). To disable the pipeline, pass `godmode: false, autotune: false, parseltongue: false, stm_modules: []`.
+The G0DM0DƎ pipeline (GODMODE, AutoTune, Parseltongue, STM) runs transparently behind the standard interface. Pipeline metadata is returned in the `x_g0dm0d3` extension field (ignored by standard SDKs). To disable the pipeline, pass `godmode: false, autotune: false, parseltongue: false, stm_modules: []`.
 
 ### ULTRAPLINIAN via OpenAI SDK
 
@@ -363,11 +363,11 @@ Supports `stream: true` for SSE streaming in standard OpenAI chunk format.
 | `top_p` | number | no | | Nucleus sampling |
 | `frequency_penalty` | number | no | | Frequency penalty |
 | `presence_penalty` | number | no | | Presence penalty |
-| `godmode` | bool | no | `true` | Inject GODMODE system prompt (G0DM0D3 extension) |
-| `autotune` | bool | no | `true` | Enable AutoTune (G0DM0D3 extension) |
-| `parseltongue` | bool | no | `true` | Enable Parseltongue (G0DM0D3 extension) |
-| `stm_modules` | array | no | `["hedge_reducer", "direct_mode"]` | STM modules (G0DM0D3 extension) |
-| `contribute_to_dataset` | bool | no | `false` | Opt in to dataset (G0DM0D3 extension) |
+| `godmode` | bool | no | `true` | Inject GODMODE system prompt (G0DM0DƎ extension) |
+| `autotune` | bool | no | `true` | Enable AutoTune (G0DM0DƎ extension) |
+| `parseltongue` | bool | no | `true` | Enable Parseltongue (G0DM0DƎ extension) |
+| `stm_modules` | array | no | `["hedge_reducer", "direct_mode"]` | STM modules (G0DM0DƎ extension) |
+| `contribute_to_dataset` | bool | no | `false` | Opt in to dataset (G0DM0DƎ extension) |
 
 **Response (OpenAI-compatible):**
 ```json
@@ -569,7 +569,7 @@ Any request to `/v1/chat/completions`, `/v1/ultraplinian/completions`, or `/v1/c
 - User feedback/ratings (if submitted later)
 
 **What is NEVER stored:**
-- API keys (OpenRouter or G0DM0D3)
+- API keys (OpenRouter or G0DM0DƎ)
 - IP addresses
 - Auth tokens
 

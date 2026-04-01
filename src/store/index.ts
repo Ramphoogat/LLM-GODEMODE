@@ -27,6 +27,7 @@ interface StoreState {
   renameConversation: (id: string, title: string) => void
   addMessage: (id: string, message: Message) => string
   updateMessageContent: (id: string, msgId: string, content: string, extra?: any) => void
+  updateConversationModel: (id: string, model: string) => void
   apiKey: string | null
   setApiKey: (key: string | null) => void
   isStreaming: boolean
@@ -100,6 +101,8 @@ interface StoreState {
   setUltraplinianApiUrl: (url: string | null) => void
   ultraplinianApiKey: string | null
   setUltraplinianApiKey: (key: string | null) => void
+  agentRouterApiKey: string | null
+  setAgentRouterApiKey: (key: string | null) => void
   // Privacy
   datasetGenerationEnabled: boolean
   setDatasetGenerationEnabled: (enabled: boolean) => void
@@ -203,11 +206,20 @@ export const useStore = create<StoreState>()(
     const nextCurrent = nextCons.find(c => c.id === state.currentConversationId) || null
     return { conversations: nextCons, currentConversation: nextCurrent }
   }),
+
+  updateConversationModel: (id: string, model: string) => set((state) => {
+    const nextCons = state.conversations.map((c) =>
+      c.id === id ? { ...c, model } : c
+    )
+    const nextCurrent = nextCons.find(c => c.id === state.currentConversationId) || null
+    return { conversations: nextCons, currentConversation: nextCurrent }
+  }),
+
   globalInput: '',
   setGlobalInput: (input) => set({ globalInput: input }),
   autoSubmitPending: false,
   setAutoSubmitPending: (pending) => set({ autoSubmitPending: pending }),
-  apiKey: null,
+  apiKey: (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_OPENROUTER_API_KEY) || null,
   setApiKey: (key) => set({ apiKey: key }),
   isStreaming: false,
   setIsStreaming: (is) => set({ isStreaming: is }),
@@ -300,9 +312,55 @@ export const useStore = create<StoreState>()(
   personas: [DEFAULT_PERSONA],
   currentPersona: DEFAULT_PERSONA,
   setCurrentPersona: (p) => set({ currentPersona: p }),
-  defaultModel: 'anthropic/claude-3.5-sonnet',
+  defaultModel: 'google/gemini-2.0-flash-lite-preview-02-05:free',
   setDefaultModel: (m) => set({ defaultModel: m }),
-  stmModules: [],
+  stmModules: [
+    {
+      id: 'hedge_reducer',
+      name: 'Hedge Reducer',
+      description: 'Automatically strips disclaimers, hedged language, and AI apologies.',
+      enabled: true,
+      transformer: (text: string) => {
+        const patterns = [
+          /^(?:I (?:should|must|need to|want to) (?:mention|note|emphasize|point out|stress|clarify|warn|caution) that[^.]*\.\s*)/i,
+          /^(?:(?:Please )?(?:Note|Remember|Keep in mind|Be aware)[^.]*\.\s*)/i,
+          /^(?:(?:Important|Critical) (?:note|warning|disclaimer)[^.]*\.\s*)/i,
+          /^(?:Before (?:I |we )(?:begin|start|proceed|continue)[^.]*\.\s*)/i,
+          /\n\n(?:\*\*)?(?:(?:Important|Critical) )?(?:Note|Warning|Disclaimer|Caution)(?:\*\*)?:?[^\n]*(?:consult|professional|advice|responsible|legal|medical|qualified)[^\n]*\n?/gi,
+          /\n\n(?:Please )?(?:note|remember|keep in mind|be aware) that[^\n]*(?:consult|professional|advice|responsible|legal|medical)[^\n]*\n?/gi,
+          /\n\n(?:Please )?(?:consult|speak with|contact|reach out to) (?:a |your )?(?:professional|doctor|lawyer|expert|specialist|qualified)[^\n]*$/i,
+          /\n\n(?:This is (?:not|for) (?:professional|legal|medical|financial)[^\n]*)$/i,
+          /\n\n(?:I (?:hope|trust) this helps|Let me know if)[^\n]*$/i
+        ]
+        let polished = text
+        patterns.forEach(p => { polished = polished.replace(p, '\n\n') })
+        return polished.replace(/\n{3,}/g, '\n\n').trim()
+      }
+    },
+    {
+      id: 'casual_mode',
+      name: 'Casual Mode',
+      description: 'Transforms formal AI speech into a more direct, casual tone.',
+      enabled: false,
+      transformer: (text: string) => {
+        return text
+          .replace(/\b(furthermore|moreover|consequently|additionally)\b/gi, 'also')
+          .replace(/\b(utilize|leverage|deploy)\b/gi, 'use')
+          .replace(/\b(commence|initiate)\b/gi, 'start')
+          .replace(/\b(terminate|cease)\b/gi, 'stop')
+          .replace(/\b(it is important to note that|please be aware that)\b/gi, 'note:')
+      }
+    },
+    {
+      id: 'direct_mode',
+      name: 'Direct Mode',
+      description: 'Strips introductory "Sure!", "Okay!", and other filler acknowledgement phrases.',
+      enabled: false,
+      transformer: (text: string) => {
+        return text.replace(/^(?:Sure!|Okay!|Absolutely!|Certainly!|Of course!|I understand\.)\s*/i, '')
+      }
+    }
+  ],
   toggleSTM: (id) => set((state) => ({
     stmModules: state.stmModules.map(m => m.id === id ? { ...m, enabled: !m.enabled } : m)
   })),
@@ -376,15 +434,8 @@ export const useStore = create<StoreState>()(
   setUltraplinianApiUrl: (url) => set({ ultraplinianApiUrl: url }),
   ultraplinianApiKey: null,
   setUltraplinianApiKey: (key) => set({ ultraplinianApiKey: key }),
-  ultraplinianRacing: false,
-  ultraplinianModelsResponded: 0,
-  ultraplinianModelsTotal: 0,
-  ultraplinianLiveModel: null,
-  ultraplinianLiveScore: null,
-  setUltraplinianLive: () => {},
-  setUltraplinianProgress: () => {},
-  setUltraplinianRacing: () => {},
-  resetUltraplinianRace: () => {},
+  agentRouterApiKey: (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_AGENTROUTER_API_KEY) || null,
+  setAgentRouterApiKey: (key) => set({ agentRouterApiKey: key }),
   datasetGenerationEnabled: false,
   setDatasetGenerationEnabled: (enabled) => set({ datasetGenerationEnabled: enabled }),
   consortiumEnabled: false,
@@ -420,6 +471,7 @@ export const useStore = create<StoreState>()(
     conversations: state.conversations,
     currentConversationId: state.currentConversationId,
     apiKey: state.apiKey,
+    agentRouterApiKey: state.agentRouterApiKey,
     theme: state.theme,
     ultraplinianEnabled: state.ultraplinianEnabled,
     ultraplinianTier: state.ultraplinianTier,

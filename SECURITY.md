@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in G0DM0D3, please report it responsibly.
+If you discover a security vulnerability in G0DM0DƎ, please report it responsibly.
 
 **Please do NOT open a public GitHub issue for security vulnerabilities.**
 
@@ -13,19 +13,13 @@ If you discover a security vulnerability in G0DM0D3, please report it responsibl
 - Impact assessment
 - Suggested fix (if you have one)
 
-### Response timeline
-
-- **Acknowledgement:** within 48 hours
-- **Initial assessment:** within 7 days
-- **Fix or mitigation:** within 30 days for critical issues
-
 ### Scope
 
 In scope:
-- The G0DM0D3 API server (`api/`)
-- The frontend application (`src/`)
-- Docker / deployment configuration
-- Authentication and authorization logic
+- The React/Next.js frontend application (`src/`)
+- State persistence logic (Zustand/localStorage)
+- API integration logic (OpenRouter & AgentRouter)
+- Deployment configuration (Next.js Build/Output)
 
 Out of scope:
 - Third-party dependencies (report upstream, but let us know)
@@ -36,13 +30,12 @@ Out of scope:
 
 | Version | Supported |
 |---------|-----------|
-| 0.4.x   | Yes       |
-| < 0.4   | No        |
+| 3.5.x   | Yes       |
+| < 3.0   | No        |
 
 ## Security Design
 
-- **Authentication:** Bearer token with constant-time comparison (timing-attack resistant)
-- **Rate limiting:** Tier-aware sliding window (per-minute + per-day + lifetime)
-- **Headers:** HSTS, CSP, X-Content-Type-Options, X-Frame-Options, Permissions-Policy
-- **Docker:** Non-root containers, minimal base images
-- **Data:** Zero PII storage, opt-in dataset collection only
+- **Zero Server Storage:** G0DM0DƎ is a client-side architecture. Your API keys are stored only in your browser's `localStorage` and are never transmitted to any server except the official AI providers (OpenRouter/AgentRouter).
+- **Environment Safety:** Built-in support for `.env` files with strict `NEXT_PUBLIC_` prefixing to prevent accidental exposure of server-side secrets.
+- **Privacy by Default:** Opt-in dataset collection ensures that no data leaves your machine without explicit consent.
+- **Headers:** HSTS, CSP, and XSRF protection provided via Next.js standard security defaults.

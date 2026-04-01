@@ -204,10 +204,13 @@ function TabButton({
 }
 
 function APIKeyTab() {
-  const { apiKey, setApiKey } = useStore()
+  const { apiKey, setApiKey, agentRouterApiKey, setAgentRouterApiKey } = useStore()
   const [showKey, setShowKey] = useState(false)
+  const [showAgentKey, setShowAgentKey] = useState(false)
   const [localKey, setLocalKey] = useState(apiKey ?? '')
+  const [localAgentKey, setLocalAgentKey] = useState(agentRouterApiKey ?? '')
   const [saved, setSaved] = useState(false)
+  const [agentSaved, setAgentSaved] = useState(false)
 
   const handleBlur = () => {
     if (localKey !== apiKey) {
@@ -217,54 +220,71 @@ function APIKeyTab() {
     }
   }
 
-  return (
-    <div className="space-y-4">
-      <div>
-        <h3 className="text-lg font-semibold mb-2">OpenRouter API Key</h3>
-        <p className="text-sm theme-secondary mb-4">
-          Your API key is stored locally and never sent to G0DM0D3 servers.
-          Get your key at{' '}
-          <a
-            href="https://openrouter.ai/keys"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="theme-primary underline"
-          >
-            openrouter.ai
-          </a>
-        </p>
-      </div>
+  const handleAgentBlur = () => {
+    if (localAgentKey !== agentRouterApiKey) {
+      setAgentRouterApiKey(localAgentKey)
+      setAgentSaved(true)
+      setTimeout(() => setAgentSaved(false), 2000)
+    }
+  }
 
-      <div className="relative">
-        <input
-          type={showKey ? 'text' : 'password'}
-          value={localKey}
-          onChange={(e) => setLocalKey(e.target.value)}
-          onBlur={handleBlur}
-          placeholder="sk-or-v1-..."
-          className="w-full px-4 py-3 pr-20 bg-theme-dim border border-theme-primary rounded-lg
-            focus:outline-none focus:glow-box"
-        />
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-          {saved && (
-            <span className="flex items-center gap-1 text-xs text-green-500">
-              <Check className="w-3 h-3" />
-              Saved
-            </span>
-          )}
-          <button
-            onClick={() => setShowKey(!showKey)}
-            className="p-1 hover:theme-primary transition-colors"
-            aria-label={showKey ? 'Hide key' : 'Show key'}
-          >
-            {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-          </button>
+  return (
+    <div className="space-y-8">
+      {/* OpenRouter Section */}
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-sm font-bold tracking-widest uppercase mb-1" style={{ color: 'var(--primary)' }}>OpenRouter API Key</h3>
+          <p className="text-xs theme-secondary mb-4">
+            Primary provider for 50+ models. Get your key at{' '}
+            <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="theme-primary underline">openrouter.ai</a>
+          </p>
+        </div>
+
+        <div className="relative">
+          <input
+            type={showKey ? 'text' : 'password'}
+            value={localKey}
+            onChange={(e) => setLocalKey(e.target.value)}
+            onBlur={handleBlur}
+            placeholder="sk-or-v1-..."
+            className="w-full px-4 py-2 pr-20 bg-theme-dim border border-theme-primary/30 rounded-lg focus:outline-none focus:border-theme-primary/60 transition-colors text-sm"
+          />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            {saved && <span className="flex items-center gap-1 text-[10px] text-green-500"><Check className="w-3 h-3" />Saved</span>}
+            <button onClick={() => setShowKey(!showKey)} className="p-1 hover:theme-primary transition-colors">
+              {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
       </div>
 
-      <p className="text-xs theme-secondary">
-        Changes are saved automatically when you click away.
-      </p>
+      {/* AgentRouter Section */}
+      <div className="space-y-4 pt-4 border-t border-theme-primary/10">
+        <div>
+          <h3 className="text-sm font-bold tracking-widest uppercase mb-1" style={{ color: '#ffcc00' }}>AgentRouter API Key</h3>
+          <p className="text-xs theme-secondary mb-4">
+            Aggregator for specialized and latest models (DeepSeek, GLM, etc.). Get your key at{' '}
+            <a href="https://agentrouter.org/console/token" target="_blank" rel="noopener noreferrer" className="theme-primary underline" style={{ color: '#ffcc00' }}>agentrouter.org</a>
+          </p>
+        </div>
+
+        <div className="relative">
+          <input
+            type={showAgentKey ? 'text' : 'password'}
+            value={localAgentKey}
+            onChange={(e) => setLocalAgentKey(e.target.value)}
+            onBlur={handleAgentBlur}
+            placeholder="sk-..."
+            className="w-full px-4 py-2 pr-20 bg-theme-dim border border-[#ffcc00]/30 rounded-lg focus:outline-none focus:border-[#ffcc00]/60 transition-colors text-sm"
+          />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            {agentSaved && <span className="flex items-center gap-1 text-[10px] text-green-500"><Check className="w-3 h-3" />Saved</span>}
+            <button onClick={() => setShowAgentKey(!showAgentKey)} className="p-1 hover:text-[#ffcc00] transition-colors">
+              {showAgentKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

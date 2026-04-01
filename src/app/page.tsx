@@ -313,6 +313,35 @@ export default function Home() {
                 liberated AI chat. &#123;GODMODE:ENABLED&#125;
               </p>
 
+              {/* ── Model Pills (AgentRouter) ── */}
+              <div className="flex flex-wrap justify-center gap-2 mb-8 max-w-[700px] px-4">
+                {[
+                  { id: 'deepseek-r1-0528', label: 'deepseek-r1-0528', color: '#ffead9', text: '#8b4513' },
+                  { id: 'deepseek-v3.1', label: 'deepseek-v3.1', color: '#e6f4ea', text: '#1e4620' },
+                  { id: 'deepseek-v3.2', label: 'deepseek-v3.2', color: '#ffead9', text: '#8b4513' },
+                  { id: 'glm-4.5', label: 'glm-4.5', color: '#e8f0fe', text: '#1967d2' },
+                  { id: 'glm-4.6', label: 'glm-4.6', color: '#e6f4ea', text: '#1e4620' }
+                ].map((m) => (
+                  <button
+                    key={m.id}
+                    className="px-3 py-1.5 rounded-full text-[11px] font-bold tracking-tight transition-all hover:scale-105 active:scale-95 flex items-center gap-1.5 shadow-sm border border-black/5"
+                    style={{ backgroundColor: m.color, color: m.text }}
+                    onClick={() => {
+                      if (!currentConversationId) {
+                        const newId = createNewConversation(m.id, currentPersona?.id || 'godmode')
+                        selectConversation(newId)
+                      } else {
+                        // Normally you'd update current conversation model, but for now just inform user
+                        setGlobalInput(`Switch to ${m.label}...`)
+                      }
+                    }}
+                  >
+                    <span className="w-3 h-3 rounded-full flex items-center justify-center bg-white/50 text-[8px]">⚡</span>
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+
               {/* Suggestion grid — 2x2 grid from screen */}
               <div className="grid grid-cols-2 gap-3 w-full max-w-[600px] px-4">
                 {SUGGESTIONS.map((s) => (
