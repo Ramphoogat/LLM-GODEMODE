@@ -46,6 +46,15 @@ const config: Config = {
           text: '#171717',
           dim: '#f5f5f5',
         },
+        // Solar theme (light orange)
+        solar: {
+          bg: '#fffbf2',
+          primary: '#ff8c00',
+          secondary: '#ffb74d',
+          accent: '#ffe0b2',
+          text: '#4e2c00',
+          dim: '#ffedd5',
+        },
       },
       fontFamily: {
         mono: ['JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', 'monospace'],

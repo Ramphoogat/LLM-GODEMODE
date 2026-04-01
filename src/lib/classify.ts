@@ -1,0 +1,1 @@
+﻿export const classifyPrompt = (text: string): any => ({ tier: "light", category: "general", confidence: 0.9 }); export interface ClassificationResult { tier: string; category: string; confidence: number; }
