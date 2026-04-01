@@ -1,13 +1,18 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import remarkGfm from 'remark-gfm'
 import { ChatInput } from '@/components/ChatInput'
 import { SettingsModal } from '@/components/SettingsModal'
 import { LogoAnimated } from '@/components/LogoAnimated'
 import { ThinkingUI } from '@/components/ThinkingUI'
 import { useStore } from '@/store'
 import { Conversation, Message } from '@/types'
-import { MoreVertical, Edit2, Trash2, Check, X } from 'lucide-react'
+import { MoreVertical, Edit2, Trash2, Check, X, Brain, ChevronDown, ChevronUp, Zap } from 'lucide-react'
+import { LiquidMarkdown } from '@/components/LiquidMarkdown'
 
 // ── Suggestions matching the original index.html exactly ──────────────────
 const SUGGESTIONS = [
@@ -49,6 +54,9 @@ export default function Home() {
     setUltraplinianEnabled,
     consortiumEnabled,
     setConsortiumEnabled,
+    isStreaming,
+    godModeEnabled,
+    setGodModeEnabled,
     setGlobalInput,
     setAutoSubmitPending,
   } = useStore()
@@ -59,6 +67,24 @@ export default function Home() {
   const [renamingId, setRenamingId] = useState<string | null>(null)
   const [renameValue, setRenameValue] = useState('')
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null)
+  const [expandedThinkingIds, setExpandedThinkingIds] = useState<Set<string>>(new Set())
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const toggleThinking = (msgId: string) => {
+    setExpandedThinkingIds(prev => {
+      const next = new Set(prev)
+      if (next.has(msgId)) next.delete(msgId)
+      else next.add(msgId)
+      return next
+    })
+  }
+
+  // Auto-scroll logic
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'auto' })
+    }
+  }, [currentConversation?.messages])
 
   const handleNewChat = () => {
     handleRenameCancel()
@@ -145,7 +171,7 @@ export default function Home() {
                     <span className="conv-title flex-1">
                       {conv.title || conv.messages?.[0]?.content?.slice(0, 36) || 'New Chat'}
                     </span>
-                    
+
                     <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         className="p-1 hover:text-theme-primary text-theme-secondary"
@@ -159,7 +185,7 @@ export default function Home() {
                     </div>
 
                     {menuOpenId === conv.id && (
-                      <div 
+                      <div
                         className="absolute right-2 top-10 z-[100] bg-theme-bg-secondary border border-theme-primary/30 rounded-lg shadow-xl overflow-hidden min-w-[100px]"
                         onClick={(e) => e.stopPropagation()}
                       >
@@ -216,7 +242,7 @@ export default function Home() {
             {/* Mode Switcher — pill style like screenshot */}
             <div className="relative flex items-center ml-2" ref={modeRef}>
               <button
-                className={`px-4 py-2 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-full flex items-center gap-2 font-bold text-xs shadow-[0_0_15px_rgba(255,165,0,0.3)] hover:scale-105 transition-all ${modeOpen ? 'scale-105 ring-2 ring-orange-400/50' : ''}`}
+                className={`px-4 py-2 ultraplinian-pill text-white rounded-full flex items-center gap-2 font-bold text-xs transition-all ${modeOpen ? 'scale-105 ring-2 ring-ultra-1/50' : ''}`}
                 onClick={() => setModeOpen(o => !o)}
               >
                 <span className="text-sm">{currentMode.icon}</span>
@@ -224,9 +250,25 @@ export default function Home() {
                 <span className="text-[10px] opacity-70">▼</span>
               </button>
 
+              {/* GODMODE BUTTON */}
+              <button
+                className={`ml-2 px-4 py-2 rounded-full flex items-center gap-2 font-bold text-xs transition-all ${godModeEnabled ? 'bg-gradient-to-r from-red-600 to-amber-600 shadow-[0_0_20px_rgba(255,0,0,0.4)] animate-pulse' : 'bg-theme-bg-secondary border border-theme-primary/20 hover:border-theme-primary/50 text-theme-text-dim'}`}
+                onClick={() => {
+                   const nextState = !godModeEnabled;
+                   setGodModeEnabled(nextState);
+                   if (nextState) {
+                     setUltraplinianEnabled(true);
+                   }
+                }}
+                title="Switch to God Mode (Brain + Coder + Vision + Backup)"
+              >
+                <Zap size={14} className={godModeEnabled ? 'text-white' : 'text-theme-primary'} />
+                <span className={godModeEnabled ? 'text-white' : ''}>GODMODE</span>
+              </button>
+
               {/* Mode Dropdown */}
               {modeOpen && (
-                <div 
+                <div
                   className="absolute left-0 top-full mt-5 z-[100] bg-theme-bg border border-theme-primary/30 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden min-w-[300px]"
                   style={{ animation: 'slideIn 0.15s ease-out' }}
                 >
@@ -259,8 +301,8 @@ export default function Home() {
                           </div>
                           <div className="text-[11px] text-theme-text-dim mt-1.5 leading-relaxed font-mono opacity-80 group-hover:opacity-100">
                             {m.id === 'ultraplinian' && 'System-wide model ensemble. AI judge reviews and synthesizes the optimal solution.'}
-                            {m.id === 'consortium'   && 'Multi-agent hive-mind synthesis. Real-time consensus from top-tier models.'}
-                            {m.id === 'standard'     && 'Direct interaction mode. Optimized for speed and single-model efficiency.'}
+                            {m.id === 'consortium' && 'Multi-agent hive-mind synthesis. Real-time consensus from top-tier models.'}
+                            {m.id === 'standard' && 'Direct interaction mode. Optimized for speed and single-model efficiency.'}
                           </div>
                         </div>
                         {activeMode === m.id && (
@@ -292,8 +334,7 @@ export default function Home() {
         {/* Messages / Welcome */}
         <div className="messages" id="messagesArea">
           {!currentConversationId || !currentConversation?.messages?.length ? (
-
-            /* ── Welcome Screen (re-matching exactly) ── */
+            /* ... existing welcome screen ... */
             <div className="welcome flex flex-col items-center justify-center min-h-[60%]">
               <div
                 className="text-6xl mb-8 opacity-90 animate-pulse"
@@ -331,7 +372,6 @@ export default function Home() {
                         const newId = createNewConversation(m.id, currentPersona?.id || 'godmode')
                         selectConversation(newId)
                       } else {
-                        // Normally you'd update current conversation model, but for now just inform user
                         setGlobalInput(`Switch to ${m.label}...`)
                       }
                     }}
@@ -342,7 +382,7 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Suggestion grid — 2x2 grid from screen */}
+              {/* Suggestion grid */}
               <div className="grid grid-cols-2 gap-3 w-full max-w-[600px] px-4">
                 {SUGGESTIONS.map((s) => (
                   <button
@@ -359,29 +399,85 @@ export default function Home() {
                 ))}
               </div>
             </div>
-
           ) : (
+            <>
+              {currentConversation.messages.map((msg: Message, i: number) => (
+                <div key={msg.id ?? i} className={`message ${msg.role}`}>
+                  <div className="message-avatar">
+                    {msg.role === 'user' ? 'U' : 'AI'}
+                  </div>
+                  <div className="message-wrapper">
+                    {msg.role === 'assistant' && msg.thinking && msg.thinking.logs.length > 0 && (
+                      <div className="mb-2">
+                        <button
+                          onClick={() => toggleThinking(msg.id!!)}
+                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-theme-primary/5 border border-theme-primary/20 hover:bg-theme-primary/10 transition-all text-[10px] font-bold tracking-tight text-theme-primary group"
+                        >
+                          <Brain size={12} className="group-hover:rotate-12 transition-transform" />
+                          <span>{expandedThinkingIds.has(msg.id!!) ? 'HIDE THINKING' : 'SHOW THINKING'}</span>
+                          {expandedThinkingIds.has(msg.id!!) ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                        </button>
 
-            /* ── Messages list ── */
-            currentConversation.messages.map((msg: Message, i: number) => (
-              <div key={msg.id ?? i} className={`message ${msg.role}`}>
-                <div className="message-avatar">
-                  {msg.role === 'user' ? 'U' : 'AI'}
-                </div>
-                <div className="message-wrapper">
-                  <div className="message-content" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', minHeight: '1em' }}>{msg.content}</div>
-                  <div className="message-actions">
-                    <button
-                      className="msg-action-btn"
-                      title="Copy"
-                      onClick={() => navigator.clipboard.writeText(msg.content)}
-                    >
-                      📋
-                    </button>
+                        {expandedThinkingIds.has(msg.id!!) && (
+                          <div className="mt-2 p-4 bg-theme-dim/40 border border-theme-primary/20 rounded-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="flex flex-col gap-2">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40">AI REASONING LOGS</span>
+                                <span className="text-[9px] opacity-40 font-mono italic">
+                                  {msg.thinking.title || 'Process Complete'}
+                                </span>
+                              </div>
+
+                              <div className="flex flex-col gap-1.5 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+                                {msg.thinking.logs.map((log) => (
+                                  <div key={log.id} className="flex gap-2 text-[11px] leading-relaxed font-mono">
+                                    <span className="opacity-30 shrink-0">[{new Date(log.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}]</span>
+                                    <span className={`
+                                      ${log.type === 'step' ? 'text-theme-primary font-bold' : ''}
+                                      ${log.type === 'warn' ? 'text-yellow-500' : ''}
+                                      ${log.type === 'fail' ? 'text-red-500' : ''}
+                                      ${log.type === 'success' ? 'text-green-500' : ''}
+                                      opacity-80
+                                    `}>
+                                      {log.message}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+
+                              <button
+                                onClick={() => toggleThinking(msg.id!!)}
+                                className="mt-3 flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-theme-primary/5 hover:bg-theme-primary/10 text-[9px] font-black uppercase tracking-widest text-theme-primary/60 transition-all border border-theme-primary/10"
+                              >
+                                <ChevronUp size={10} />
+                                HIDE REASONING
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    <div className="message-content">
+                      <LiquidMarkdown
+                        content={msg.content}
+                        enabled={liquidResponseEnabled}
+                        isStreaming={isStreaming && i === currentConversation.messages.length - 1}
+                      />
+                    </div>
+                    <div className="message-actions">
+                      <button
+                        className="msg-action-btn"
+                        title="Copy"
+                        onClick={() => navigator.clipboard.writeText(msg.content)}
+                      >
+                        📋
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+              <div ref={messagesEndRef} className="h-4 w-full" />
+            </>
           )}
         </div>
 

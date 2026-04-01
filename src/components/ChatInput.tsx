@@ -11,7 +11,7 @@ import { applyParseltongue, detectTriggers } from '@/lib/parseltongue'
 import { Send, Loader2, StopCircle, SlidersHorizontal, AlertTriangle, Brain, Zap, ChevronDown, Paperclip, Image as ImageIcon, FileText, XCircle } from 'lucide-react'
 import { Message, Persona, STMModule, Attachment } from '../types'
 
-import { ULTRAPLINIAN_MODELS, FREE_MODELS, getModelDisplayName } from '@/lib/models'
+import { ULTRAPLINIAN_MODELS, FREE_MODELS, IMAGE_MODELS, getModelDisplayName } from '@/lib/models'
 
 const AGENTROUTER_MODELS = [
   { id: 'deepseek-r1-0528', name: 'DeepSeek R1', provider: 'AgentRouter' },
@@ -20,7 +20,7 @@ const AGENTROUTER_MODELS = [
 
 // Deduplicated merged list
 const ALL_MODELS = [
-  ...Array.from(new Set([...ULTRAPLINIAN_MODELS, ...FREE_MODELS])).map(id => ({
+  ...Array.from(new Set([...ULTRAPLINIAN_MODELS, ...FREE_MODELS, ...IMAGE_MODELS])).map(id => ({
     id,
     name: getModelDisplayName(id),
     provider: 'OpenRouter',
@@ -87,6 +87,7 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
     setAutoSubmitPending,
     updateConversationModel,
     setDefaultModel,
+    godModeEnabled,
   } = useStore()
 
   const [showTuneDetails, setShowTuneDetails] = useState(false)
@@ -202,8 +203,8 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
     const parseltongueResult = applyParseltongue(originalMessage, parseltongueConfig)
     const userMessage = parseltongueResult.transformedText
 
-    addMessage(convId, { 
-      role: 'user', 
+    addMessage(convId, {
+      role: 'user',
       content: originalMessage,
       attachments: attachments.length > 0 ? [...attachments] : undefined
     })
@@ -307,16 +308,29 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
             },
             onComplete: (content, modelId, score) => {
               const finalMessage = content || '⚠️ **ULTRA RACE FAILURE**: No models generated a valid response. Please check your API key or connection.'
+              const currentThinking = useStore.getState().thinking;
+              
               finishThinking(content ? `Winner: ${modelId.split('/').pop()} (${score})` : 'GAUNTLET FAILED')
+              
+              const thinkingData = {
+                logs: [...currentThinking.logs],
+                models: [...currentThinking.models],
+                title: currentThinking.title
+              };
+
               if (!assistantMsgId) {
                 addMessage(convId!!, {
                   role: 'assistant',
                   content: finalMessage,
                   model: content ? modelId : 'error',
-                  persona: persona.id
+                  persona: persona.id,
+                  thinking: thinkingData
                 })
               } else {
-                updateMessageContent(convId!!, assistantMsgId, finalMessage, { model: content ? modelId : 'error' })
+                updateMessageContent(convId!!, assistantMsgId, finalMessage, { 
+                  model: content ? modelId : 'error',
+                  thinking: thinkingData
+                })
               }
             },
             onPrefillGenerated: (prefill) => {
@@ -324,8 +338,9 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
             }
           },
           {
-            tier: ultraplinianTier,
-            earlyStopThreshold: 85
+            tier: godModeEnabled ? 'godmode' : ultraplinianTier,
+            earlyStopThreshold: 85,
+            signal: abortControllerRef.current.signal
           }
         )
       } else if (consortiumEnabled) {
@@ -360,7 +375,11 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
   }
 
   const handleStop = () => {
-    if (abortControllerRef.current) abortControllerRef.current.abort()
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    finishThinking('STOPPED BY USER')
+    setIsStreaming(false)
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -374,7 +393,7 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
   const activeMemoryCount = memoriesEnabled ? memories.filter((m: any) => m.active).length : 0
 
   return (
-    <div className="border-t border-theme-primary bg-theme-dim/50 p-4">
+    <div className="border-y-2 border-t-2 border-b-2 border-x-2 border-theme-primary bg-theme-dim/50 p-4">
       <div className="max-w-4xl mx-auto">
         {autoTuneEnabled && displayResult && showTuneDetails && (
           <div className="mb-3 p-3 bg-theme-bg border border-theme-primary rounded-lg space-y-3">
@@ -425,8 +444,8 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
               <div className="p-2 border-b border-theme-primary/10 flex justify-between items-center">
                 <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 px-2 py-1">Select Model ({ALL_MODELS.length})</p>
                 <div className="flex gap-2 mr-2">
-                   <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-theme-primary" /><span className="text-[7px]">OR</span></div>
-                   <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#ffcc00]" /><span className="text-[7px]">AR</span></div>
+                  <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-theme-primary" /><span className="text-[7px]">OR</span></div>
+                  <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#ffcc00]" /><span className="text-[7px]">AR</span></div>
                 </div>
               </div>
               <div className="max-h-[400px] overflow-y-auto p-1 custom-scrollbar">
@@ -441,8 +460,8 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
                       setShowModelSelector(false)
                     }}
                     className={`w-full flex items-start gap-3 p-2.5 rounded-lg transition-all text-left group
-                      ${(currentConversation?.model || defaultModel) === m.id 
-                        ? 'bg-theme-primary/10 border border-theme-primary/20' 
+                      ${(currentConversation?.model || defaultModel) === m.id
+                        ? 'bg-theme-primary/10 border border-theme-primary/20'
                         : 'hover:bg-theme-primary/5 border border-transparent'
                       }`}
                   >
@@ -527,7 +546,7 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
           {isStreaming ? (
             <button
               onClick={handleStop}
-              className="w-[48px] h-[48px] flex items-center justify-center bg-red-500/20 border border-red-500 rounded-xl hover:bg-red-500/30 transition-all"
+              className="w-[54px] h-[54px] flex items-center justify-center bg-red-500/20 border border-red-500 rounded-xl hover:bg-red-500/30 transition-all flex-shrink-0"
             >
               <StopCircle className="w-6 h-6 text-red-500" />
             </button>

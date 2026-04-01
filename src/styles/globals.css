@@ -1,11 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 /* ── G0DM0D3 Design System ── */
 /* Ported from index.html — JetBrains Mono + Matrix dark theme */
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 /* ── CSS Variables (Matrix / Default Theme) ── */
 :root {
@@ -33,6 +34,11 @@
   --theme-border: var(--border);
   --theme-hover: var(--hover);
   --theme-danger: var(--danger);
+
+  /* Ultraplinian Colors (Matrix: Green/Cyan/Neon) */
+  --ultra-1: #00ff41;
+  --ultra-2: #008f11;
+  --ultra-3: #00ffff;
 }
 
 /* ── Theme Variants ── */
@@ -48,6 +54,11 @@
   --hover: #1a0d0d;
   --danger: #ff0000;
   --logo-glow: 0 0 8px #ff3e3e, 0 0 18px rgba(255,62,62,0.5), 0 0 32px rgba(255,62,62,0.2);
+
+  /* Ultraplinian Colors (Hacker: Red/Orange/Yellow) */
+  --ultra-1: #ff3e3e;
+  --ultra-2: #ff8c00;
+  --ultra-3: #ffcc00;
 }
 
 [data-theme="glyph"] {
@@ -62,6 +73,11 @@
   --hover: #0f1f4a;
   --danger: #ff3e3e;
   --logo-glow: 0 0 8px #e94560, 0 0 18px rgba(233,69,96,0.5), 0 0 32px rgba(233,69,96,0.2);
+
+  /* Ultraplinian Colors (Glyph: Pink/Purple/Blue) */
+  --ultra-1: #e94560;
+  --ultra-2: #a855f7;
+  --ultra-3: #0f3460;
 }
 
 [data-theme="minimal"] {
@@ -76,6 +92,11 @@
   --hover: #ebebeb;
   --danger: #dc2626;
   --logo-glow: 0 0 4px #171717, 0 0 10px rgba(23,23,23,0.3);
+
+  /* Ultraplinian Colors (Minimal: Dark Gray/Light Gray) */
+  --ultra-1: #171717;
+  --ultra-2: #737373;
+  --ultra-3: #e5e5e5;
 }
 
 [data-theme="solar"] {
@@ -90,6 +111,30 @@
   --hover: #ffecd0;
   --danger: #dc2626;
   --logo-glow: 0 0 8px #ff8c00, 0 0 18px rgba(255,140,0,0.4), 0 0 32px rgba(255,140,0,0.2);
+
+  /* Ultraplinian Colors (Solar: Orange/Deep Orange/Red) */
+  --ultra-1: #ff8c00;
+  --ultra-2: #e67e00;
+  --ultra-3: #dc2626;
+}
+
+[data-theme="carbon"] {
+  --bg: #212121;
+  --bg-secondary: #171717;
+  --primary: #10a37f;
+  --secondary: #5a5a5a;
+  --accent: #2f2f2f;
+  --text: #ececec;
+  --text-dim: #9b9b9b;
+  --border: #303030;
+  --hover: #2f2f2f;
+  --danger: #cf222e;
+  --logo-glow: 0 0 4px #10a37f, 0 0 10px rgba(16,163,127,0.3);
+
+  /* Ultraplinian Colors (Carbon: ChatGPT Green/Teal) */
+  --ultra-1: #10a37f;
+  --ultra-2: #0e8a6a;
+  --ultra-3: #5a5a5a;
 }
 
 /* ── Reset ── */
@@ -400,14 +445,14 @@ body {
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background: linear-gradient(135deg, #ff0055, #ff6600, #ffcc00, #ff0055);
+  background: linear-gradient(135deg, var(--ultra-1), var(--ultra-2), var(--ultra-3), var(--ultra-1));
   background-size: 300% 300%;
   animation: ultraGradient 2s ease infinite, ultraPulse 1s ease-in-out infinite;
   border-radius: 8px;
   font-weight: bold;
   color: white;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 20px rgba(255, 100, 0, 0.5), 0 0 40px rgba(255, 0, 100, 0.3);
+  box-shadow: 0 0 20px var(--ultra-1), 0 0 40px var(--ultra-2);
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -415,6 +460,14 @@ body {
   font-size: 13px;
   letter-spacing: 2px;
   border: none;
+}
+.ultraplinian-pill {
+  background: linear-gradient(to right, var(--ultra-1), var(--ultra-2));
+  box-shadow: 0 0 15px var(--ultra-1);
+}
+.ultraplinian-pill:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px var(--ultra-1);
 }
 .ultraplinian-badge:hover { transform: scale(1.05); }
 
@@ -440,11 +493,11 @@ body {
 }
 .mode-switcher-btn:hover { transform: scale(1.05); }
 .mode-switcher-btn.ultraplinian {
-  background: linear-gradient(135deg, #ff0055, #ff6600, #ffcc00, #ff0055);
+  background: linear-gradient(135deg, var(--ultra-1), var(--ultra-2), var(--ultra-3), var(--ultra-1));
   background-size: 300% 300%;
   animation: ultraGradient 2s ease infinite, ultraPulse 1s ease-in-out infinite;
   text-shadow: 0 0 10px rgba(255,255,255,0.5);
-  box-shadow: 0 0 20px rgba(255,100,0,0.5), 0 0 40px rgba(255,0,100,0.3);
+  box-shadow: 0 0 20px var(--ultra-1), 0 0 40px var(--ultra-2);
 }
 .mode-switcher-btn.consortium {
   background: linear-gradient(135deg, #7c3aed, #a855f7, #c084fc, #7c3aed);
@@ -503,20 +556,21 @@ body {
 .messages::-webkit-scrollbar-thumb:hover { background: #2a2a2a; }
 
 .message {
-  max-width: 75%;
-  margin: 0 0 12px;
+  max-width: 1100px; /* Wider readout */
+  width: 95%;        /* Centered with some breathing room */
+  margin: 0 auto 28px; /* High contrast spacing for readability */
   display: flex;
-  gap: 8px;
-  align-items: flex-end;
+  gap: 16px;
+  align-items: flex-start;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .message.user {
-  margin-left: auto;
   flex-direction: row-reverse;
 }
 
 .message.assistant {
-  margin-right: auto;
+  width: 100%; /* Fully span the message container */
 }
 
 .message-avatar {
@@ -539,10 +593,11 @@ body {
 }
 
 .message.assistant .message-avatar {
-  background: rgba(0, 255, 65, 0.12);
-  border: 1px solid rgba(0, 255, 65, 0.3);
+  background: linear-gradient(135deg, rgba(0, 255, 65, 0.15), rgba(0, 255, 65, 0.05));
+  border: 1px solid var(--primary);
   color: var(--primary);
-  text-shadow: 0 0 6px rgba(0, 255, 65, 0.4);
+  text-shadow: 0 0 10px var(--primary);
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
 }
 
 .message-wrapper {
@@ -566,9 +621,12 @@ body {
 }
 
 .message.assistant .message-content {
-  background: var(--bg-secondary);
+  background: linear-gradient(180deg, var(--bg-secondary), var(--bg));
   border: 1px solid var(--border);
-  border-bottom-left-radius: 4px;
+  border-left: 2px solid var(--primary); /* Accent line for AI */
+  padding: 18px 22px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .message-content pre {
@@ -606,7 +664,7 @@ body {
 
 .msg-action-btn {
   background: transparent;
-  border: 1px solid rgba(0, 255, 65, 0.15);
+  border: 1px solid var(--primary);
   border-radius: 4px;
   color: var(--primary);
   padding: 5px 7px;
@@ -619,14 +677,15 @@ body {
 }
 .msg-action-btn:hover {
   opacity: 1;
-  background: rgba(0, 255, 65, 0.08);
-  border-color: rgba(0, 255, 65, 0.4);
-  text-shadow: 0 0 6px rgba(0, 255, 65, 0.5);
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--bg);
+  text-shadow: none;
 }
 .msg-action-btn.copied {
   opacity: 1;
-  color: var(--primary);
-  background: rgba(0, 255, 65, 0.12);
+  color: var(--bg);
+  background: var(--primary);
   border-color: var(--primary);
 }
 
@@ -634,8 +693,9 @@ body {
 .magic-info {
   margin-bottom: 12px;
   padding: 8px 12px;
-  background: linear-gradient(135deg, rgba(255, 165, 0, 0.1) 0%, rgba(255, 100, 0, 0.05) 100%);
-  border: 1px solid rgba(255, 165, 0, 0.3);
+  background: linear-gradient(135deg, var(--ultra-1), var(--ultra-2));
+  opacity: 0.15;
+  border: 1px solid var(--ultra-1);
   border-radius: 8px;
   font-size: 11px;
   color: var(--text-dim);
@@ -646,10 +706,10 @@ body {
   gap: 6px;
   margin-bottom: 6px;
   font-weight: 600;
-  color: #ffa500;
+  color: var(--ultra-1);
   cursor: pointer;
 }
-.magic-info-header:hover { color: #ffb733; }
+.magic-info-header:hover { color: var(--ultra-1); opacity: 0.8; }
 
 .magic-info-badge {
   padding: 2px 6px;
@@ -658,10 +718,10 @@ body {
   font-weight: bold;
   text-transform: uppercase;
 }
-.magic-info-badge.ultraplinian { background: linear-gradient(135deg, #ff0055, #ff6600); color: white; }
+.magic-info-badge.ultraplinian { background: linear-gradient(135deg, var(--ultra-1), var(--ultra-2)); color: white; }
 .magic-info-badge.consortium   { background: linear-gradient(135deg, #7c3aed, #c084fc); color: white; }
 .magic-info-badge.autotune     { background: linear-gradient(135deg, #00ffff, #8a2be2); color: white; }
-.magic-info-badge.godmode      { background: linear-gradient(135deg, #ff3e3e, #ff7b00); color: white; }
+.magic-info-badge.godmode      { background: linear-gradient(135deg, var(--primary), var(--ultra-1)); color: white; }
 .magic-info-badge.parseltongue { background: linear-gradient(135deg, #2d5a27, #4a7c43); color: white; }
 
 /* ── Welcome Screen ── */

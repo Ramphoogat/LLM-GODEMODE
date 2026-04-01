@@ -38,6 +38,10 @@ G0DM0DƎ addresses these research needs through a modular framework operating en
 
 7. **ZDR Metadata and Telemetry** (`api/lib/metadata.ts`, `src/lib/telemetry.ts`, `api/lib/hf-publisher.ts`): A three-tier privacy-first operational telemetry architecture comprising always-on server-side metadata tracking, client-side structural telemetry beacons, and the opt-in dataset system above. PII exclusion is enforced by construction (schema has no PII fields). In-memory ring buffers auto-publish to HuggingFace as JSONL, enabling longitudinal analysis of steering primitive usage patterns without recording any message content, prompts, responses, API keys, or IP addresses.
 
+8. **Liquid Streaming & Temporal Dynamics** (`src/components/LiquidMarkdown.tsx`): A novel response delivery mechanism that throttles LLM output into a word-by-word streaming reveal. This allows researchers to evaluate the "temporal cognitive alignment" of a model — how its reasoning and output markers develop over the course of a single inference run.
+
+9. **Hybrid Gauntlet (GODMODE)**: A specialized evaluation tier that targets a specific high-IQ subset of free frontier models (e.g., Qwen 3.6, Llama 3.3). This enables a focused "God Mode" race where the system optimizes specifically for these heterogeneous model architectures to extract the maximum available ground-truth response.
+
 ---
 
 ## 2. Related Work

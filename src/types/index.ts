@@ -10,6 +10,11 @@ export interface Message {
   autoTunePatternMatches?: any[];
   autoTuneDeltas?: any[];
   attachments?: Attachment[];
+  thinking?: {
+    logs: ThinkingLog[];
+    models?: ThinkingModelStatus[];
+    title?: string;
+  };
 }
 
 export interface Attachment {
@@ -45,7 +50,7 @@ export interface STMModule {
   transformer: (text: string) => string;
 }
 
-export type Theme = 'matrix' | 'hacker' | 'solar' | 'glyph' | 'minimal';
+export type Theme = 'matrix' | 'hacker' | 'solar' | 'glyph' | 'minimal' | 'carbon';
 
 export type MemoryType = 'fact' | 'preference' | 'instruction';
 

@@ -6,6 +6,13 @@ export const TIER_SIZES = {
   ultra: 55
 }
 
+export const IMAGE_MODELS = [
+  'black-forest-labs/flux-1.1-pro',
+  'black-forest-labs/flux-schnell',
+  'openai/dall-e-3',
+  'anthropic/claude-3-5-sonnet:image', // Some specific setups
+]
+
 export const ULTRAPLINIAN_MODELS = [
   // ⚡ FAST TIER (models 1-10)
   'google/gemini-2.5-flash',
@@ -73,6 +80,16 @@ export const ULTRAPLINIAN_MODELS = [
   'mistralai/codestral-2508'
 ]
 
+export const GODMODE_MODELS = [
+  'qwen/qwen3.6-plus-preview:free',
+  'openai/gpt-oss-120b:free',
+  'meta-llama/llama-3.3-70b-instruct:free',
+  'qwen/qwen3-coder:free',
+  'google/gemma-3-27b-it:free',
+  'nvidia/nemotron-3-super-120b:free',
+  'arcee-ai/trinity-large-preview:free'
+]
+
 export const FREE_MODELS = [
   'google/lyria-3-pro-preview',
   'google/lyria-3-clip-preview',
@@ -116,6 +133,8 @@ export const getModelsForTier = (tier: string): string[] => {
       return ULTRAPLINIAN_MODELS.slice(0, TIER_SIZES.power)
     case 'ultra':
       return ULTRAPLINIAN_MODELS.slice(0, TIER_SIZES.ultra)
+    case 'godmode':
+      return GODMODE_MODELS
     default:
       return ULTRAPLINIAN_MODELS.slice(0, TIER_SIZES.standard)
   }

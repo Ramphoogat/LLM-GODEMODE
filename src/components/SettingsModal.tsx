@@ -1193,6 +1193,16 @@ function AppearanceTab() {
       accent: '#ffe0b2',
       desc: 'Warm amber sunrise palette',
     },
+    {
+      id: 'carbon',
+      name: 'Carbon',
+      emoji: '⌨',
+      bg: '#212121',
+      primary: '#10a37f',
+      secondary: '#5a5a5a',
+      accent: '#2f2f2f',
+      desc: 'Sleek ChatGPT-style gray aesthetic',
+    },
   ]
 
   function handleSelect(id: Theme) {

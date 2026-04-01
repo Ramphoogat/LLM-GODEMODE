@@ -178,6 +178,7 @@ print(response.choices[0].message.content)
 | `ultraplinian/smart` | 36 | Pro+ |
 | `ultraplinian/power` | 45 | Enterprise |
 | `ultraplinian/ultra` | 51 | Enterprise |
+| `ultraplinian/godmode` | Elite Free | Active |
 
 The response is standard OpenAI format. The winning model name is in `response.model`. Race metadata is in `x_g0dm0d3.race`.
 
@@ -332,6 +333,7 @@ The flagship endpoint. Queries N models in parallel with the GODMODE system prom
 | `smart` | 36 | + GPT-5, Gemini 3 Pro, Claude Opus 4.6, DeepSeek R1, Llama 405B, Hermes 405B, etc. |
 | `power` | 45 | + Grok 4, Llama 4 Maverick, Qwen3 235B, Mistral Large, Gemini 3 Flash, Kimi K2 |
 | `ultra` | 51 | + Grok 4.1 Fast, Claude Opus 4, Qwen 2.5 Coder, QwQ-32B, Codestral |
+| `godmode` | Elite Free | **G0DM0DƎ 2026 Recommended**: Qwen 3.6 Plus, Llama 3.3 70B, GPT-OSS 120B, Gemma 3 |
 
 ---
 

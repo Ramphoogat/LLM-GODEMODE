@@ -16,6 +16,7 @@ G0DM0DƎ v3.5 is a professional, modular AI orchestration platform. It pushes th
 ![License](https://img.shields.io/badge/license-AGPL--3.0-green)
 ![Tech Stack](https://img.shields.io/badge/stack-Next.js%2014%20|%20TS%20|%20Tailwind-blue)
 ![Thinking UI](https://img.shields.io/badge/UI-Real--time%20Thinking-orange)
+![God Mode](https://img.shields.io/badge/Mode-GodMode--v4-red)
 
 ## 🛠 Tech Stack
 
@@ -49,7 +50,10 @@ G0DM0DƎ/
 ## ✨ Core Modules
 
 - 🌋 **ULTRAPLINIAN (v3.5)** — Parallel model evaluation engine. Races multiple models (Claude, Grok, GPT, Gemini) simultaneously.
+- ⚡ **GODMODE** — The ultimate "Free God Mode" combo. Orchestrates a race between the absolute best free models of 2026 (Qwen 3.6, Llama 3.3, GPT-OSS).
+- 💧 **LIQUID STREAMING** — High-fidelity, word-by-word response reveal for enhanced readability and cognitive engagement.
 - 🧠 **THINKING UI** — High-aesthetic terminal overlay providing transparency into the AI's internal processing.
+- 🎨 **MULTIMODAL** — Native support for high-end image generation (FLUX, DALL-E) and visual analysis.
 - 🐍 **Parseltongue** — Advanced red-teaming engine with 33 input perturbation techniques.
 - 🎛 **AutoTune** — Context-adaptive sampling engine with online reinforcement learning.
 

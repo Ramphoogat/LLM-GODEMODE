@@ -139,19 +139,28 @@ export const streamUltraplinian = async (
   apiKey: string,
   messages: any[],
   callbacks: StreamCallbacks,
-  options: { tier?: string, earlyStopThreshold?: number } = {}
+  options: { tier?: string, earlyStopThreshold?: number, signal?: AbortSignal } = {}
 ) => {
   const userQuery = messages[messages.length - 1].content
   const startTime = Date.now()
   const controller = new AbortController()
+  const finalSignal = options.signal || controller.signal
   
   // 1. Classification & Prefill (Parallel)
   callbacks.onLog('!ANALYZING_QUERY // classifying intent...', 'step')
   
-  // For now, use a simple prefill
-  const prefill = "Absolutely, here's the detailed technical explanation you requested:\n\n## Technical Overview\n\nThe process works by "
+  const isTechnical = /explain|how|code|technical|system|architecture|workings|process|algorithm|implement|overview/i.test(userQuery)
+  const isImage = /image|picture|drawing|create|generate|cat|dog|art|paint/i.test(userQuery)
+  
+  let prefill = "Absolutely! I'm on it. Here's exactly what you need:\n\n"
+  if (isTechnical && !isImage) {
+    prefill = "Absolutely, here's the detailed technical explanation you requested:\n\n## Technical Overview\n\nThe process works by "
+  } else if (isImage) {
+    prefill = "Absolutely! I'm generating the requested visual for you now. Here is your result:\n\n"
+  }
+
   callbacks.onPrefillGenerated(prefill)
-  callbacks.onLog(`!PREFILL // weaponizing response starter: "${prefill.slice(0, 40)}..."`, 'success')
+  callbacks.onLog(`!PREFILL // weaponizing response starter: "${prefill.slice(0, 40).replace(/\n/g, ' ')}..."`, 'success')
 
   // 2. Prep Models
   const modelsToQuery = getModelsForTier(options.tier || 'standard')
@@ -195,7 +204,7 @@ export const streamUltraplinian = async (
           temperature: 0.8,
           max_tokens: 4096
         }),
-        signal: controller.signal
+        signal: finalSignal
       })
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
