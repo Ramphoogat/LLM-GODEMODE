@@ -8,9 +8,24 @@ import { classifyPrompt, ClassificationResult } from '@/lib/classify'
 import { classifyWithLLM } from '@/lib/classify-llm'
 import { computeAutoTuneParams, getContextLabel, getStrategyLabel, PARAM_META, AutoTuneResult } from '@/lib/autotune'
 import { applyParseltongue, detectTriggers } from '@/lib/parseltongue'
-import { Send, Loader2, StopCircle, SlidersHorizontal, AlertTriangle } from 'lucide-react'
+import { Send, Loader2, StopCircle, SlidersHorizontal, AlertTriangle, Brain, Zap, ChevronDown } from 'lucide-react'
 import { Message, Persona, STMModule } from '../types'
-import { input } from 'framer-motion/client'
+
+import { ULTRAPLINIAN_MODELS, getModelDisplayName } from '@/lib/models'
+
+const AGENTROUTER_MODELS = [
+  { id: 'deepseek-r1-0528', name: 'DeepSeek R1', provider: 'AgentRouter' },
+  { id: 'glm-4.5', name: 'GLM 4.5', provider: 'AgentRouter' },
+]
+
+const ALL_MODELS = [
+  ...ULTRAPLINIAN_MODELS.map(id => ({
+    id,
+    name: getModelDisplayName(id),
+    provider: 'OpenRouter'
+  })),
+  ...AGENTROUTER_MODELS
+]
 
 interface ChatInputProps {
   onSubmit?: (msg: any) => void;
@@ -23,6 +38,7 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
     addMessage,
     updateMessageContent,
     apiKey,
+    agentRouterApiKey,
     isStreaming,
     setIsStreaming,
     personas,
@@ -67,9 +83,12 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
     setGlobalInput,
     autoSubmitPending,
     setAutoSubmitPending,
+    updateConversationModel,
+    setDefaultModel,
   } = useStore()
 
   const [showTuneDetails, setShowTuneDetails] = useState(false)
+  const [showModelSelector, setShowModelSelector] = useState(false)
   const [parseltonguePreview, setParseltonguePreview] = useState<{
     triggersFound: string[]
     transformed: boolean
@@ -279,10 +298,12 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
           model: 'consortium',
           persona: persona.id
         })
-      } else {
+      } else if (apiKey) {
         await sendMessage({
           apiKey,
+          agentRouterApiKey,
           messages,
+          model,
           onDelta,
           signal: abortControllerRef.current.signal
         })
@@ -347,7 +368,62 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
           </div>
         )}
 
-        <div className="flex items-center gap-2">
+        {/* ── Model Selector ── */}
+        <div className="relative mb-3">
+          <button
+            onClick={() => setShowModelSelector(!showModelSelector)}
+            className="flex items-center gap-2 group px-3 py-1.5 rounded-lg bg-theme-dim/40 border border-theme-primary/20 hover:border-theme-primary/50 transition-all text-[11px] font-bold tracking-tight theme-secondary"
+          >
+            <Brain className="w-3.5 h-3.5 text-theme-primary group-hover:scale-110 transition-transform" />
+            <span className="opacity-60">MODEL:</span>
+            <span className="text-theme-primary">
+              {ALL_MODELS.find((m: any) => m.id === (currentConversation?.model || defaultModel))?.name || (currentConversation?.model || defaultModel)}
+            </span>
+            <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${showModelSelector ? 'rotate-180' : ''}`} />
+          </button>
+
+          {showModelSelector && (
+            <div className="absolute bottom-full left-0 mb-2 w-[320px] bg-theme-dim border border-theme-primary/30 rounded-xl shadow-2xl backdrop-blur-xl z-50 overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <div className="p-2 border-b border-theme-primary/10 flex justify-between items-center">
+                <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 px-2 py-1">Select Model ({ALL_MODELS.length})</p>
+                <div className="flex gap-2 mr-2">
+                   <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-theme-primary" /><span className="text-[7px]">OR</span></div>
+                   <div className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-[#ffcc00]" /><span className="text-[7px]">AR</span></div>
+                </div>
+              </div>
+              <div className="max-h-[400px] overflow-y-auto p-1 custom-scrollbar">
+                {ALL_MODELS.map((m: any) => (
+                  <button
+                    key={m.id}
+                    onClick={() => {
+                      if (currentConversationId) {
+                        updateConversationModel(currentConversationId, m.id)
+                      }
+                      setDefaultModel(m.id)
+                      setShowModelSelector(false)
+                    }}
+                    className={`w-full flex items-start gap-3 p-2.5 rounded-lg transition-all text-left group
+                      ${(currentConversation?.model || defaultModel) === m.id 
+                        ? 'bg-theme-primary/10 border border-theme-primary/20' 
+                        : 'hover:bg-theme-primary/5 border border-transparent'
+                      }`}
+                  >
+                    <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${m.provider === 'AgentRouter' ? 'bg-[#ffcc00] shadow-[0_0_8px_#ffcc00]' : 'bg-theme-primary shadow-[0_0_8px_var(--primary-glow)]'}`} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <span className={`text-[11px] font-bold truncate ${m.provider === 'AgentRouter' ? 'text-[#ffcc00]' : 'theme-primary'}`}>{m.name}</span>
+                        <span className="text-[8px] font-black opacity-30 shrink-0">{m.provider}</span>
+                      </div>
+                      <p className="text-[9px] theme-secondary opacity-40 truncate mt-0.5">{m.id}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-end gap-1.5 w-full">
           <button
             type="button"
             className="p-3 text-theme-secondary hover:text-theme-primary transition-all rounded-xl border border-theme-primary/20 bg-theme-dim/50"
