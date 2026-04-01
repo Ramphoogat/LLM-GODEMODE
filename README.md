@@ -11,26 +11,49 @@
 
 [GODMOD3.AI](https://godmod3.ai)
 
-G0DM0D3 v3.5 is a professional, modular AI orchestration platform built with Next.js and TypeScript. It pushes the boundaries of post-training interaction through real-time model racing, comparative evaluation, and semantic transformation. Built for red-teamers, researchers, and power users who demand transparency and control over LLM cognition.
+G0DM0D3 v3.5 is a professional, modular AI orchestration platform. It pushes the boundaries of post-training interaction through real-time model racing, comparative evaluation, and semantic transformation. Built for red-teamers, researchers, and power users who demand transparency and control over LLM cognition.
 
 ![License](https://img.shields.io/badge/license-AGPL--3.0-green)
 ![Tech Stack](https://img.shields.io/badge/stack-Next.js%2014%20|%20TS%20|%20Tailwind-blue)
 ![Thinking UI](https://img.shields.io/badge/UI-Real--time%20Thinking-orange)
 
+## 🛠 Tech Stack
+
+The application is built on a high-performance, modular stack designed for scalability and real-time interaction:
+
+- **Framework**: [Next.js 14](https://nextjs.org) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org) (Strict Mode)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com) (Modern utility-first architecture)
+- **State Management**: [Zustand](https://zustand-demo.pmnd.rs) (Fast, scalable global store)
+- **Animations**: [Framer Motion](https://www.framer.com/motion) (Smooth thinking & UI transitions)
+- **API Connectivity**: [OpenRouter](https://openrouter.ai) (Unified access to 50+ frontier models)
+
+## 📁 Application Structure
+
+G0DM0D3 follows a clean, modular directory structure for maximum local development efficiency:
+
+```
+G0DM0D3/
+├── src/
+│   ├── app/            # Next.js App Router (Layouts & Pages)
+│   ├── components/     # React Components (ThinkingUI, ChatInput, Modals)
+│   ├── lib/            # Core AI Logic (OpenRouter API, AutoTune, Parseltongue)
+│   ├── store/          # Zustand Global State (State, Actions, Persistance)
+│   ├── types/          # Global TypeScript Interfaces
+│   └── styles/         # Global CSS & Tailwind Configuration
+├── index.html          # Legacy single-file version (archived)
+├── docker-compose.yml  # Containerization for rapid deployment
+└── README.md           # This file
+```
+
 ## ✨ Core Modules
 
-- 🌋 **ULTRAPLINIAN (v3.5)** — Parallel model evaluation engine. Races up to 55 models (Claude, Grok, GPT, Gemini) simultaneously, scoring them in real-time to synthesize the optimal, most liberated response.
-- 🧠 **THINKING UI** — High-aesthetic terminal overlay providing 100% transparency into the AI's "internal monologue," classification steps, and model leaderboard.
-- 🐍 **Parseltongue** — Advanced input perturbation engine for red-teaming research, featuring 33 techniques to study model robustness and cross-domain bypasses.
-- 🎛 **AutoTune** — Context-adaptive sampling parameter engine with EMA-based reinforcement learning. Automatically optimizes temperature and top_p based on query intent.
-- ⚡ **STM Modules** — Semantic Transformation Modules for real-time output normalization, hedge reduction, and preamble stripping.
+- 🌋 **ULTRAPLINIAN (v3.5)** — Parallel model evaluation engine. Races multiple models (Claude, Grok, GPT, Gemini) simultaneously.
+- 🧠 **THINKING UI** — High-aesthetic terminal overlay providing transparency into the AI's internal processing.
+- 🐍 **Parseltongue** — Advanced red-teaming engine with 33 input perturbation techniques.
+- 🎛 **AutoTune** — Context-adaptive sampling engine with online reinforcement learning.
 
 ## 🚀 Getting Started
-
-### Prerequisites
-
-- [Node.js 18+](https://nodejs.org)
-- [OpenRouter API Key](https://openrouter.ai/keys)
 
 ### Installation
 
@@ -46,43 +69,11 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser. Enter your API key in the Settings modal (⚙️) to begin.
-
-## 📁 Project Structure
-
-G0DM0D3 has evolved from a single-file script to a robust, modular React application:
-
-```
-G0DM0D3/
-├── src/
-│   ├── app/            # Next.js App Router (Layouts & Pages)
-│   ├── components/     # React Components (ThinkingUI, ChatInput, etc.)
-│   ├── lib/            # Core Logic (OpenRouter, AutoTune, Parseltongue)
-│   ├── store/          # Global State (Zustand)
-│   ├── types/          # TypeScript Definitions
-│   └── styles/         # Tailwind CSS & Global Styles
-├── index.html          # Legacy single-file version (archived)
-├── API.md              # Documentation for the orchestration layer
-└── PAPER.md            # Research documentation on model racing
-```
-
-## 🔐 Privacy & Security
-
-- ✅ **Self-Custody**: Your API key and chat history never leave your browser. All data is stored in `localStorage`.
-- ✅ **No Tracking**: No cookies, no trackers, no PII.
-- ✅ **Opt-in Research**: Dataset generation for AI safety research is strictly opt-in via Settings.
-- ✅ **Local-First**: Built to run entirely on your local machine for maximum privacy.
-
-## 📜 Documentation
-
-- [API.md](API.md) — Orchestration layer reference.
-- [PAPER.md](PAPER.md) — Theoretical background on parallel model racing.
-- [TERMS.md](TERMS.md) — Privacy policy and data handling details.
+Open [http://localhost:3000](http://localhost:3000) and enter your API key in the Settings modal (⚙️).
 
 ## 🜏 
 
 > We believe in creative liberty and cognition without control.
-> Tools by builders for builders, not gatekeepers.
 > AI freedom is human freedom.
 
-Made with 🖤 by Pliny the Prompter
+**Created by Ram Phoogat**
