@@ -340,7 +340,7 @@ export default function Home() {
                   {msg.role === 'user' ? 'U' : 'AI'}
                 </div>
                 <div className="message-wrapper">
-                  <div className="message-content">{msg.content}</div>
+                  <div className="message-content" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', minHeight: '1em' }}>{msg.content}</div>
                   <div className="message-actions">
                     <button
                       className="msg-action-btn"

@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
 import { Message, Conversation, Persona, STMModule, ParseltongueConfig, Theme, MemoryType, Memory, TierInfo, ThinkingState, ThinkingLog, ThinkingModelStatus } from '../types'
 import { AutoTuneStrategy } from '@/lib/autotune'
 
@@ -122,7 +123,9 @@ interface StoreState {
   setAutoSubmitPending: (pending: boolean) => void
 }
 
-export const useStore = create<StoreState>((set, get) => ({
+export const useStore = create<StoreState>()(
+  persist(
+    (set, get) => ({
   conversations: [],
   clearConversations: () => set({ conversations: [], currentConversationId: null, currentConversation: null }),
   currentConversationId: null,
@@ -401,7 +404,6 @@ export const useStore = create<StoreState>((set, get) => ({
     // const { ultraplinianApiUrl, ultraplinianApiKey } = get()
   },
   restoreBackup: (data: any) => {
-    // Basic restore function
     set({
       ...(data.conversations && { conversations: data.conversations }),
       ...(data.currentConversationId && { currentConversationId: data.currentConversationId }),
@@ -409,10 +411,24 @@ export const useStore = create<StoreState>((set, get) => ({
       ...(data.defaultModel && { defaultModel: data.defaultModel }),
       ...(data.currentPersona && { currentPersona: data.currentPersona }),
       ...(data.apiKey && { apiKey: data.apiKey }),
-      ...(data.autoTuneEnabled !== undefined && { autoTuneEnabled: data.autoTuneEnabled }),
-      ...(data.memories && { memories: data.memories }),
-      ...(data.consortiumEnabled !== undefined && { consortiumEnabled: data.consortiumEnabled }),
-      ...(data.ultraplinianEnabled !== undefined && { ultraplinianEnabled: data.ultraplinianEnabled }),
     })
-  }
+  },
+}), {
+  name: 'godmod3-storage',
+  storage: createJSONStorage(() => localStorage),
+  partialize: (state: StoreState) => ({
+    conversations: state.conversations,
+    currentConversationId: state.currentConversationId,
+    apiKey: state.apiKey,
+    theme: state.theme,
+    ultraplinianEnabled: state.ultraplinianEnabled,
+    ultraplinianTier: state.ultraplinianTier,
+    consortiumEnabled: state.consortiumEnabled,
+    autoTuneEnabled: state.autoTuneEnabled,
+    memories: state.memories,
+    memoriesEnabled: state.memoriesEnabled,
+    parseltongueConfig: state.parseltongueConfig,
+    customSystemPrompt: state.customSystemPrompt,
+    useCustomSystemPrompt: state.useCustomSystemPrompt,
+  }),
 }))

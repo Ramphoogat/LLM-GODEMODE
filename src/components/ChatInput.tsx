@@ -249,16 +249,17 @@ export function ChatInput({ onSubmit }: ChatInputProps = {}) {
               }
             },
             onComplete: (content, modelId, score) => {
-              finishThinking(`Winner: ${modelId.split('/').pop()} (${score})`)
+              const finalMessage = content || '⚠️ **ULTRA RACE FAILURE**: No models generated a valid response. Please check your API key or connection.'
+              finishThinking(content ? `Winner: ${modelId.split('/').pop()} (${score})` : 'GAUNTLET FAILED')
               if (!assistantMsgId) {
                 addMessage(convId!!, {
                   role: 'assistant',
-                  content,
-                  model: modelId,
+                  content: finalMessage,
+                  model: content ? modelId : 'error',
                   persona: persona.id
                 })
               } else {
-                updateMessageContent(convId!!, assistantMsgId, content, { model: modelId })
+                updateMessageContent(convId!!, assistantMsgId, finalMessage, { model: content ? modelId : 'error' })
               }
             },
             onPrefillGenerated: (prefill) => {
